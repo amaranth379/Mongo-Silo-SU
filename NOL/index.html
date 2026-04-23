@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>놀 유니버스를 위한 Agentic AI 데이터 플랫폼 전략</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card-bg {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        .flow-box {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #3b82f6;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+            flex: 1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            min-width: 150px;
+        }
+
+        .flow-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #8b5cf6;
+            margin: 0 0.5rem;
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <nav class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🚀</span>
+                    <span class="font-bold text-xl tracking-tight text-white">NOL <span
+                            class="text-blue-500">Universe</span></span>
+                </div>
+                <div class="text-sm font-medium text-slate-400">Agentic AI Architecture Proposal</div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <header class="text-center mb-20">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+                진정한 Agentic AI 구축을 위한 <br />
+                <span class="gradient-text">하나의 완벽한 데이터 플랫폼</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto">
+                AWS 환경에서의 성공적인 PoC를 넘어, 놀 유니버스의 대규모 트래픽과 복잡한 사용자 여정을 완벽하게 지원하는 자율형 AI 에이전트를 구현하기 위해서는 데이터 인프라의 통합과 표준화가
+                필수적입니다. MongoDB Atlas는 그 해답을 제시합니다.
+            </p>
+        </header>
+
+        <section class="mb-24">
+            <div class="mb-10 text-center">
+                <h2 class="text-3xl font-bold text-white mb-4">파편화된 아키텍처의 한계를 넘다</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">기존의 AI 구현은 관계형 DB, 검색 엔진, 벡터 DB 등 여러 시스템을 기워 맞추는 방식으로 이루어져
+                    지연 시간 증가와 관리의 복잡성을 초래했습니다.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="card-bg rounded-2xl p-8 h-full">
+                    <h3 class="text-xl font-bold text-blue-400 mb-6 flex items-center gap-2"><span>⚠️</span> 기존의 파편화된
+                        데이터 인프라</h3>
+                    <div class="flex flex-col gap-4">
+                        <div
+                            class="p-4 bg-slate-800 border border-slate-700 rounded-lg flex justify-between items-center">
+                            <span class="font-medium text-slate-300">Operational Data</span>
+                            <span class="px-3 py-1 bg-slate-700 text-xs rounded-full text-slate-400">RDBMS /
+                                NoSQL</span>
+                        </div>
+                        <div class="flex justify-center text-slate-500">⬇️ 데이터 동기화 지연 및 파이프라인 관리 비용 발생 ⬇️</div>
+                        <div
+                            class="p-4 bg-slate-800 border border-slate-700 rounded-lg flex justify-between items-center">
+                            <span class="font-medium text-slate-300">Semantic Search</span>
+                            <span class="px-3 py-1 bg-slate-700 text-xs rounded-full text-slate-400">Vector
+                                Database</span>
+                        </div>
+                        <div class="flex justify-center text-slate-500">⬇️ 일관성 결여 및 다중 API 호출 ⬇️</div>
+                        <div
+                            class="p-4 bg-slate-800 border border-slate-700 rounded-lg flex justify-between items-center">
+                            <span class="font-medium text-slate-300">Keyword Search</span>
+                            <span class="px-3 py-1 bg-slate-700 text-xs rounded-full text-slate-400">Search
+                                Engine</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-bg rounded-2xl p-8 h-full border-blue-500/30 border-2 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-8xl">💎</div>
+                    <h3 class="text-xl font-bold text-purple-400 mb-6 flex items-center gap-2"><span>✨</span> MongoDB
+                        Atlas: 통합 데이터 플랫폼</h3>
+                    <div
+                        class="bg-slate-900 rounded-xl p-6 border border-purple-500/30 h-full flex flex-col justify-center">
+                        <div class="text-center mb-6">
+                            <span class="text-2xl font-black text-white">MongoDB Atlas</span>
+                            <p class="text-sm text-slate-400 mt-1">Single Converged Datastore</p>
+                        </div>
+                        <div class="flex justify-around items-center gap-2 flex-wrap">
+                            <div class="bg-slate-800 px-4 py-3 rounded-lg text-center flex-1 border border-slate-700">
+                                <span class="block text-2xl mb-1">📊</span>
+                                <span class="text-sm font-bold text-blue-300">JSON Data</span>
+                            </div>
+                            <span class="text-slate-500 text-xl">+</span>
+                            <div class="bg-slate-800 px-4 py-3 rounded-lg text-center flex-1 border border-slate-700">
+                                <span class="block text-2xl mb-1">🎯</span>
+                                <span class="text-sm font-bold text-purple-300">Vector Search</span>
+                            </div>
+                            <span class="text-slate-500 text-xl">+</span>
+                            <div class="bg-slate-800 px-4 py-3 rounded-lg text-center flex-1 border border-slate-700">
+                                <span class="block text-2xl mb-1">🔍</span>
+                                <span class="text-sm font-bold text-pink-300">Full-Text Search</span>
+                            </div>
+                        </div>
+                        <div
+                            class="mt-8 text-center text-sm font-medium text-slate-300 bg-slate-800 py-3 rounded-lg border border-slate-700">
+                            단일 API ($search, $vectorSearch) 로 모든 데이터에 동시 접근
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-24">
+            <div class="mb-10 text-center">
+                <h2 class="text-3xl font-bold text-white mb-4">에이전트 역량의 극대화</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">Agentic AI는 단순한 질의응답을 넘어 장기 기억(Long-term Memory)을 바탕으로 자율적인
+                    도구 사용과 다단계 추론을 수행해야 합니다. MongoDB는 이러한 상태 유지(Stateful) 시스템의 근간이 됩니다.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="card-bg rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-white mb-2 text-center">AI 패러다임별 시스템 역량 비교</h3>
+                    <p class="text-sm text-slate-400 mb-6 text-center">전통적 챗봇 대비 MongoDB 기반 에이전트의 수행 능력</p>
+                    <div class="chart-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card-bg rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-white mb-2 text-center">놀 유니버스 인프라 친화력</h3>
+                    <p class="text-sm text-slate-400 mb-6 text-center">표준 프레임워크 및 기존 PoC 자산과의 완벽한 호환성</p>
+
+                    <div class="space-y-6 mt-4">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-500/20 p-3 rounded-lg text-blue-400 text-xl">🧩</div>
+                            <div>
+                                <h4 class="font-bold text-lg text-slate-100">업계 표준 프레임워크 지원</h4>
+                                <p class="text-sm text-slate-400 mt-1">LangChain, LangGraph의 공식 파트너로서 Agent Memory 관리 및
+                                    State Graph 저장을 기본적으로 지원하여 표준화된 개발이 가능합니다.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-purple-500/20 p-3 rounded-lg text-purple-400 text-xl">☁️</div>
+                            <div>
+                                <h4 class="font-bold text-lg text-slate-100">AWS 에코시스템과의 유연성</h4>
+                                <p class="text-sm text-slate-400 mt-1">AWS 기반의 인프라에서 구동되며, 기존에 테스트하신 Bedrock Agent Core,
+                                    Strand SDK 등과 마찰 없이 통합되어 모델의 유연한 교체와 내재화 전략을 뒷받침합니다.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-emerald-500/20 p-3 rounded-lg text-emerald-400 text-xl">🔐</div>
+                            <div>
+                                <h4 class="font-bold text-lg text-slate-100">대규모 트래픽 대비 안정성</h4>
+                                <p class="text-sm text-slate-400 mt-1">여행/여가 도메인의 특성상 급증하는 트래픽에 대응하기 위한 Sharding을 통해 방대한
+                                    스케일에서도 일관된 성능과 엔터프라이즈급 보안을 제공합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-24">
+            <div class="mb-10 text-center">
+                <h2 class="text-3xl font-bold text-white mb-4">Voyage AI 시너지와 한국어/멀티모달 고도화</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">놀 유니버스가 보유한 방대한 한국어 리뷰 데이터, 숙소 이미지, 유저 행동 로그를 가장 정확하게 이해하고
+                    검색하기 위한 최적의 조합입니다.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-5 card-bg rounded-2xl p-8">
+                    <h3 class="text-2xl font-bold text-white mb-4">로컬라이즈된 최고 수준의 검색 경험</h3>
+                    <p class="text-slate-300 mb-6 leading-relaxed">
+                        Voyage AI의 강력한 다국어/한국어 벡터링 성능과 멀티모달(텍스트+이미지) 처리 능력을 MongoDB Vector Search와 결합하십시오.
+                        단순 키워드를 넘어 사용자의 의도, 감성, 그리고 시각적 정보까지 포함된 시맨틱 검색이 가능해집니다.
+                    </p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-slate-200 bg-slate-800/50 p-3 rounded">
+                            <span class="text-emerald-400">✔️</span> 한국어 자연어 쿼리 의도 파악 극대화
+                        </li>
+                        <li class="flex items-center gap-3 text-slate-200 bg-slate-800/50 p-3 rounded">
+                            <span class="text-emerald-400">✔️</span> 숙소 이미지와 텍스트 리뷰의 교차 검색
+                        </li>
+                        <li class="flex items-center gap-3 text-slate-200 bg-slate-800/50 p-3 rounded">
+                            <span class="text-emerald-400">✔️</span> 자체 경량화 LLM 내재화 구축 시 최적의 RAG 저장소
+                        </li>
+                    </ul>
+                </div>
+                <div class="lg:col-span-7 card-bg rounded-2xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-2 text-center">아키텍처 복잡도 대비 한국어 검색 성능 비교 분석</h3>
+                    <div class="chart-container" style="height: 350px;">
+                        <div id="scatterPlot" class="w-full h-full"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <div class="mb-10 text-center">
+                <h2 class="text-3xl font-bold text-white mb-4">Event-Driven Agentic Architecture</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">Atlas Stream Processing을 통해 데이터의 변경 사항을 실시간으로 감지하고, 에이전트가
+                    즉각적으로 행동을 개시하도록 아키텍처를 진화시킬 수 있습니다.</p>
+            </div>
+
+            <div class="card-bg rounded-2xl p-8 overflow-x-auto">
+                <div class="min-w-[800px]">
+                    <div class="flex justify-between items-center mb-4 text-sm font-bold text-slate-500 px-4">
+                        <div class="w-1/4 text-center">User Action</div>
+                        <div class="w-1/4 text-center">Data Layer</div>
+                        <div class="w-1/4 text-center">Stream Processing</div>
+                        <div class="w-1/4 text-center">Agent Action</div>
+                    </div>
+                    <div class="flex items-stretch gap-2 py-4">
+                        <div class="flow-box flex flex-col justify-center border-slate-600">
+                            <span class="text-2xl mb-2">📱</span>
+                            <span class="font-bold text-slate-200 text-sm">신규 예약 / 리뷰 작성<br />(User Input)</span>
+                        </div>
+                        <div class="flow-arrow">➔</div>
+                        <div
+                            class="flow-box flex flex-col justify-center border-blue-500/50 relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-blue-500/10 group-hover:bg-blue-500/20 transition-colors">
+                            </div>
+                            <span class="text-2xl mb-2">💾</span>
+                            <span class="font-bold text-slate-200 text-sm">MongoDB<br />컬렉션 Insert/Update</span>
+                        </div>
+                        <div class="flow-arrow text-pink-500">➔</div>
+                        <div
+                            class="flow-box flex flex-col justify-center border-pink-500/50 shadow-[0_0_15px_rgba(236,72,153,0.2)]">
+                            <span class="text-2xl mb-2">⚡</span>
+                            <span class="font-bold text-white text-sm">Atlas Stream<br />Processing 감지</span>
+                            <span class="text-xs text-pink-300 mt-1">Aggregation Pipeline</span>
+                        </div>
+                        <div class="flow-arrow text-emerald-500">➔</div>
+                        <div class="flow-box flex flex-col justify-center border-emerald-500/50">
+                            <span class="text-2xl mb-2">🤖</span>
+                            <span class="font-bold text-emerald-300 text-sm">LangGraph Agent<br />자동 트리거 및 대응</span>
+                        </div>
+                    </div>
+                    <div class="text-center mt-6 text-sm text-slate-400">
+                        데이터베이스 이벤트가 실시간으로 에이전트의 워크플로우를 가동시켜 무결점의 즉각적인 고객 경험을 제공합니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-950 border-t border-slate-800 py-8 text-center text-slate-500 text-sm">
+        <p>&copy; 2026 MongoDB Architecture Proposal for NOL Universe.</p>
+    </footer>
+
+    <script>
+        const wrapLabel = (label) => {
+            if (label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + word).length > 16) {
+                    if (currentLine) lines.push(currentLine.trim());
+                    currentLine = word + ' ';
+                } else {
+                    currentLine += word + ' ';
+                }
+            });
+            if (currentLine) lines.push(currentLine.trim());
+            return lines;
+        };
+
+        const tooltipConfig = {
+            callbacks: {
+                title: function (tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = "'Noto Sans KR', sans-serif";
+
+        const ctxRadar = document.getElementById('radarChart').getContext('2d');
+
+        const rawRadarLabels = [
+            '도구 사용 및 복합 추론 (Multi-path)',
+            '장기 메모리 및 컨텍스트 유지',
+            '프레임워크 표준 호환성',
+            '실시간 데이터 동기화',
+            '정형/비정형/벡터 동시 쿼리'
+        ];
+
+        const radarLabels = rawRadarLabels.map(wrapLabel);
+
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: radarLabels,
+                datasets: [
+                    {
+                        label: '전통적 AI (Stateless/단일 DB)',
+                        data: [30, 20, 40, 50, 20],
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'MongoDB 기반 Agentic AI',
+                        data: [90, 95, 100, 95, 100],
+                        backgroundColor: 'rgba(236, 72, 153, 0.2)',
+                        borderColor: 'rgba(236, 72, 153, 1)',
+                        pointBackgroundColor: 'rgba(236, 72, 153, 1)',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(148, 163, 184, 0.2)' },
+                        grid: { color: 'rgba(148, 163, 184, 0.2)' },
+                        pointLabels: {
+                            color: '#e2e8f0',
+                            font: { size: 11, weight: '500' }
+                        },
+                        ticks: { display: false, min: 0, max: 100 }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#cbd5e1', padding: 20 } },
+                    tooltip: tooltipConfig
+                }
+            }
+        });
+
+        const trace1 = {
+            x: [2],
+            y: [95],
+            mode: 'markers+text',
+            type: 'scatter',
+            name: 'MongoDB + Voyage AI',
+            text: ['단일 플랫폼 + 최고수준 한국어 벡터'],
+            textposition: 'top right',
+            marker: { size: 24, color: '#ec4899', line: { width: 2, color: '#fbcfe8' } },
+            textfont: { color: '#fbcfe8', size: 13, family: 'Noto Sans KR' }
+        };
+
+        const trace2 = {
+            x: [8],
+            y: [75],
+            mode: 'markers+text',
+            type: 'scatter',
+            name: 'RDB + Pinecone + Elastic',
+            text: ['파편화된 다중 DB 연동'],
+            textposition: 'bottom center',
+            marker: { size: 16, color: '#3b82f6', opacity: 0.7 },
+            textfont: { color: '#94a3b8', size: 11, family: 'Noto Sans KR' }
+        };
+
+        const trace3 = {
+            x: [5],
+            y: [60],
+            mode: 'markers+text',
+            type: 'scatter',
+            name: 'NoSQL + OpenSearch',
+            text: ['통합 부족 및 범용 임베딩'],
+            textposition: 'bottom center',
+            marker: { size: 16, color: '#8b5cf6', opacity: 0.7 },
+            textfont: { color: '#94a3b8', size: 11, family: 'Noto Sans KR' }
+        };
+
+        const layout = {
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'transparent',
+            margin: { t: 30, b: 50, l: 60, r: 120 },
+            xaxis: {
+                title: { text: '아키텍처 복잡도 (낮을수록 우수)', font: { color: '#94a3b8' } },
+                autorange: 'reversed',
+                gridcolor: '#334155',
+                zerolinecolor: '#475569',
+                tickfont: { color: '#94a3b8' },
+                range: [10, 0]
+            },
+            yaxis: {
+                title: { text: '한국어/멀티모달 시맨틱 서치 정확도', font: { color: '#94a3b8' } },
+                gridcolor: '#334155',
+                zerolinecolor: '#475569',
+                tickfont: { color: '#94a3b8' },
+                range: [40, 100]
+            },
+            showlegend: false,
+            font: { family: 'Noto Sans KR' }
+        };
+
+        const config = {
+            responsive: true,
+            displayModeBar: false
+        };
+
+        Plotly.newPlot('scatterPlot', [trace1, trace2, trace3], layout, config);
+    </script>
+</body>
+
+</html>
