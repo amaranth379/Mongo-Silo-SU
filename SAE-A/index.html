@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="세아그룹 AX 데이터 플랫폼 가이드: 글로벌 공장·내부 업무 데이터를 의사결정에 쓰는 구조, LY Corp 사례 기반 설계 원칙, MongoDB Atlas 아키텍처">
+<title>세아그룹 × MongoDB | C-Level을 위한 AX 데이터 플랫폼 가이드</title>
+<style>
+:root{--ink:#102b38;--muted:#5a6e77;--green:#00684a;--green2:#00a35c;--lime:#b1ff05;--mint:#e5f5eb;--blue:#2f5fcf;--blue2:#eef3fd;--amber:#a86a12;--amber2:#fff4df;--red:#b3361f;--red2:#fdecea;--line:#dbe5e6;--bg:#f2f6f6;--card:#fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",Arial,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased;font-size:16px}
+a{color:var(--green)}a:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+header.top{position:sticky;top:0;z-index:50;background:var(--ink);color:#fff;box-shadow:0 2px 12px #001e2b33}
+header.top .in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:10px 24px;flex-wrap:wrap}
+header.top .brand{font-weight:800;letter-spacing:.02em;margin-right:auto}header.top .brand span{color:var(--lime)}
+header.top nav{display:flex;gap:4px;flex-wrap:wrap}header.top nav a{color:#d6e6e6;text-decoration:none;font-size:13.5px;padding:5px 9px;border-radius:6px}header.top nav a:hover{background:#1f4552;color:#fff}
+.hero{background:linear-gradient(135deg,#0d2a35 0%,#00553d 100%);color:#fff;padding:64px 24px 56px}
+.hero .in{max-width:1180px;margin:0 auto}.hero .kicker{color:var(--lime);font-weight:700;letter-spacing:.12em;font-size:13px;text-transform:uppercase}
+.hero h1{font-size:40px;line-height:1.3;margin:12px 0 14px;letter-spacing:-.02em}.hero p.lead{font-size:19px;color:#d9ebe6;max-width:880px;margin:0}
+.hero .meta{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}.hero .meta span{background:#ffffff1a;border:1px solid #ffffff33;border-radius:999px;padding:5px 13px;font-size:13px}
+main{max-width:1180px;margin:0 auto;padding:10px 24px 80px}
+section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:40px 44px;margin:28px 0;box-shadow:0 6px 24px #173a490d}
+section .num{font-size:13px;font-weight:800;color:var(--green);letter-spacing:.12em;text-transform:uppercase}
+section h2{font-size:29px;line-height:1.35;margin:6px 0 10px;letter-spacing:-.02em}section h3{font-size:20px;margin:28px 0 10px}
+.lead2{font-size:17.5px;color:var(--muted);margin:0 0 22px;max-width:960px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{border:1px solid var(--line);background:#f8fbfa;border-radius:12px;padding:22px}.card h4{margin:0 0 8px;font-size:17px}.card p{margin:0}.card ul{margin:6px 0 0;padding-left:20px}.card li{margin:3px 0}
+.card.green{background:var(--mint);border-color:#b6dcc6}.card.blue{background:var(--blue2);border-color:#d3def5}.card.amber{background:var(--amber2);border-color:#ecd3a5}.card.red{background:var(--red2);border-color:#f2c6bd}.card.dark{background:var(--ink);color:#e9f4f1;border:0}.card.dark h4{color:var(--lime)}
+.tag{display:inline-block;font-size:12px;font-weight:700;border-radius:5px;padding:2px 8px;margin-right:6px;background:#e7efef;color:#335}
+.tag.g{background:#d5f0df;color:#0b5a3c}.tag.b{background:#dce6fb;color:#264f9e}.tag.a{background:#fbe8c4;color:#7a4c0b}.tag.r{background:#f9d6cf;color:#8a2a17}
+.big{font-size:38px;font-weight:800;line-height:1.1;color:var(--green);letter-spacing:-.02em}.big small{font-size:17px;color:var(--muted);font-weight:600}
+.stat-l{font-size:14px;color:var(--muted);margin-top:6px}
+.callout{border-left:5px solid var(--green);background:var(--mint);padding:16px 20px;border-radius:0 10px 10px 0;margin:20px 0;font-size:16.5px}
+.callout.amber{border-color:#c48a2b;background:var(--amber2)}.callout.blue{border-color:var(--blue);background:var(--blue2)}
+table{width:100%;border-collapse:collapse;font-size:15px;margin:10px 0}th{background:#e6f1ec;color:#174a3b;text-align:left;padding:10px 12px;font-size:14px}td{border-bottom:1px solid var(--line);padding:10px 12px;vertical-align:top}tr:nth-child(even) td{background:#fbfdfd}td:first-child{font-weight:650}
+.fig{margin:22px 0 6px;border:1px solid var(--line);border-radius:14px;background:#fbfdfd;padding:14px;overflow-x:auto}.fig svg{display:block;width:100%;height:auto;min-width:860px}
+.figcap{font-size:13.5px;color:var(--muted);margin:6px 2px 0}
+.bar{display:flex;height:22px;border-radius:5px;overflow:hidden;background:#eef2f2}.bar span{display:block;height:100%}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:8px 0 14px}.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.rows .r{display:grid;grid-template-columns:150px 1fr 80px;gap:12px;align-items:center;margin:7px 0;font-size:14px}.rows .r b{font-weight:700}.rows .r em{font-style:normal;color:var(--muted);text-align:right}
+.steps{counter-reset:s;list-style:none;padding:0;margin:14px 0}.steps li{counter-increment:s;position:relative;padding:12px 16px 12px 58px;border:1px solid var(--line);border-radius:10px;margin:10px 0;background:#fbfdfd}.steps li::before{content:counter(s);position:absolute;left:16px;top:12px;width:28px;height:28px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px}
+.report{background:#0f2731;color:#e6f2ef;border-radius:12px;padding:22px 26px;font-size:15px;line-height:1.75}.report h5{color:var(--lime);margin:14px 0 4px;font-size:15px}.report h5:first-child{margin-top:0}.report .ev{font-size:12px;border-radius:4px;padding:1px 7px;margin-left:6px;font-weight:700}.ev.ok{background:#1f6b4d;color:#d9ffe9}.ev.ca{background:#7a5a17;color:#fff0cc}.ev.mo{background:#3a4a7a;color:#dfe6ff}
+pre{background:#0f2731;color:#e8f3f0;border-radius:10px;padding:16px 18px;font:13.5px/1.6 "SFMono-Regular",Consolas,monospace;overflow-x:auto;white-space:pre}
+details{border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;background:#fbfdfd}summary{cursor:pointer;font-weight:700;color:var(--green)}
+.src{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:26px;padding-top:12px}
+.appendix{border-top:6px solid var(--lime)}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:30px 20px 50px}
+@media (max-width:900px){.grid2,.grid3,.grid4{grid-template-columns:1fr}section{padding:28px 22px}.hero h1{font-size:30px}.rows .r{grid-template-columns:110px 1fr 60px}}
+@media print{header.top{display:none}section{break-inside:avoid;box-shadow:none}body{background:#fff}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+<div class="brand">SeAH × <span>MongoDB</span> · AX Data Platform</div>
+<nav aria-label="목차">
+<a href="#summary">요약</a><a href="#now">현재 진단</a><a href="#lessons">LY Corp 교훈</a><a href="#arch">전체 구조</a><a href="#speed">대용량·속도</a><a href="#ontology">온톨로지</a><a href="#scenario">질문 시나리오</a><a href="#roadmap">로드맵</a><a href="#appendix">Appendix</a>
+</nav></div></header>
+
+<div class="hero"><div class="in">
+<div class="kicker">C-Level Guide · AX Data Architecture</div>
+<h1>"질문하면 근거와 함께 답하는 회사"를 위한<br>세아그룹 AX 데이터 플랫폼 가이드</h1>
+<p class="lead">글로벌 공장의 설비·재고·생산 데이터와 견적·기안·설계 같은 내부 문서를 하나의 데이터 허브로 연결하고, AI가 <b>정확한 수치</b>와 <b>운영 맥락</b>을 함께 제시하도록 만드는 전체 구조와 단계별 실행 가이드입니다.</p>
+<div class="meta"><span>작성 2026-10-19</span><span>대상: 경영진 · AX 추진 조직</span><span>참고: LY Corp AI 리포트 자동화 사례</span><span>상태: 가안 (협의용)</span></div>
+</div></div>
+
+<main>
+
+<section id="summary">
+<div class="num">Executive Summary</div>
+<h2>1분 요약: 세 가지만 기억하시면 됩니다</h2>
+<div class="grid3">
+<div class="card green"><h4>① 숫자는 시스템이, 해석은 AI가</h4><p>AI(LLM)에게 계산까지 맡기면 수치 오류와 누락이 반복됩니다. 합계·전년 대비·순위는 데이터베이스가 미리 계산하고, AI는 검증된 숫자를 <b>설명하고 요약</b>하는 역할만 맡깁니다.</p></div>
+<div class="card blue"><h4>② 회사의 "지도"를 먼저 만든다</h4><p>법인 → 공장 → 라인 → 설비, 견적 → 오더 → 생산, 기안 → 구매 → 자산처럼 업무 대상 간 관계를 정의한 <b>온톨로지</b>가 있어야 AI가 엉뚱한 데이터를 연결하지 않고 원인을 찾아 내려갑니다.</p></div>
+<div class="card amber"><h4>③ 빠른 답은 "미리 준비된 데이터"에서</h4><p>경영진이 자주 묻는 지표는 기간·법인·품목별로 <b>사전 집계</b>해 두고, 드문 대규모 분석만 별도로 비동기 처리합니다. 응답 속도와 비용이 동시에 안정됩니다.</p></div>
+</div>
+<div class="callout">세아가 지금 진행 중인 <b>GPT 기반 엑셀·PDF 파싱 → 적재 → AI 프론트 목업</b>은 좋은 출발점입니다. 이 가이드는 그 결과물을 버리지 않고, 운영 가능한 의사결정 플랫폼으로 키우기 위한 <b>구조와 순서</b>를 제안합니다.</div>
+<div class="grid4" style="margin-top:22px">
+<div class="card"><div class="big">90,911<small>행</small></div><div class="stat-l">샘플 자산원장 8개 법인·공장 파일 전수 확인</div></div>
+<div class="card"><div class="big">5,787<small>행</small></div><div class="stat-l">2024~2026 매각 이력 (내부 858 · 외부 4,929)</div></div>
+<div class="card"><div class="big">51<small>%</small></div><div class="stat-l">기존 분류 사전으로 분류되지 않는 자산 비율</div></div>
+<div class="card"><div class="big">332<small>건</small></div><div class="stat-l">중복된 자산코드 키 → 식별 기준 정비 필요</div></div>
+</div>
+<p class="figcap">수치 출처: 세아 PoV 샘플 데이터(자산원장 8개 파일, 매각통합 1개 파일) 집계. 금액·단가·개인정보는 이 페이지에 포함하지 않았습니다.</p>
+</section>
+
+<section id="now">
+<div class="num">01 · 현재 진단</div>
+<h2>지금의 PoV는 "보이는 결과"를 빠르게 만들었습니다. 다음은 "믿을 수 있는 답"입니다</h2>
+<p class="lead2">현재 세아의 방식은 샘플 엑셀·PDF를 GPT API로 파싱해 적재하고, AI로 만든 프론트 화면에서 조회하는 구조입니다. 빠르게 가치를 보여주기에는 적합하지만, 전사 확대 시 아래 문제가 반복해서 나타납니다.</p>
+<div class="grid2">
+<div class="card green"><h4>잘하고 있는 점</h4><ul>
+<li>실제 현업 데이터(자산원장, 매각 이력)로 시작 → 체감 가치가 분명함</li>
+<li>엑셀·PDF처럼 형식이 제각각인 자료를 AI로 구조화하는 경험 확보</li>
+<li>경영진이 화면으로 결과를 확인할 수 있는 목업 확보</li></ul></div>
+<div class="card red"><h4>확대 시 나타나는 문제 (샘플에서 이미 확인)</h4><ul>
+<li><b>같은 자산, 다른 이름:</b> 자산코드 중복 332건, 자산명칭이 현지어·약어로 혼재</li>
+<li><b>분류 공백:</b> 미싱·자동화 사전으로 분류되지 않는 자산이 51%</li>
+<li><b>단위·통화 혼재:</b> 달러 서식 숫자와 루피아(RP) 문자열이 같은 열에 공존</li>
+<li><b>조직 기준 불일치:</b> 법인·공장·부서 표기가 파일마다 달라 "법인별 집계"가 사람마다 다르게 나옴</li></ul></div>
+</div>
+<h3>AI가 엑셀을 바로 읽고 답하게 하면 생기는 일</h3>
+<table>
+<thead><tr><th style="width:26%">증상</th><th>예시 (세아 맥락)</th><th style="width:30%">해결 방향</th></tr></thead>
+<tbody>
+<tr><td>숫자가 실행할 때마다 다름</td><td>"인도네시아 2024년 매각 건수"를 물을 때마다 합계·반올림이 달라짐</td><td>집계는 DB가 계산하고 AI는 인용만</td></tr>
+<tr><td>중요 항목 누락</td><td>유휴 설비가 가장 많은 공장을 빼고 요약</td><td>규모·변화량 기준 후보를 코드가 먼저 선정</td></tr>
+<tr><td>근거 없는 원인 단정</td><td>"자동화 투자로 유휴 미싱이 늘었다"처럼 확인되지 않은 인과 서술</td><td>근거 등급(확정 / 주의 / 관찰)으로 구분</td></tr>
+<tr><td>같은 질문, 다른 화면</td><td>목업 화면마다 집계 기준(보유 상태, 조직 범위)이 다름</td><td>지표 정의를 한 곳에서 고정·버전 관리</td></tr>
+</tbody></table>
+</section>
+
+<section id="lessons">
+<div class="num">02 · 참고 사례</div>
+<h2>LY Corp(LINE·Yahoo! JAPAN)가 AI 리포트 자동화에서 얻은 네 가지 교훈</h2>
+<p class="lead2">LY Corp은 광고 매출 데이터를 AI 에이전트가 매일 분석해 "무엇이 얼마나 변했고, 왜 변했는지"를 리포트로 보내는 시스템을 운영합니다. 처음에는 데이터를 프롬프트에 몰아넣고 한 번에 리포트를 생성했지만, 수치 오류·누락·형식 불안정·얕은 해석으로 실패했습니다. 이후 아래 원칙으로 재설계했습니다.</p>
+<div class="grid2">
+<div class="card"><h4><span class="tag g">교훈 1</span>계산과 해석을 분리</h4><p>전일·전월·전년 대비 변화와 상위 변동 항목은 코드가 먼저 계산·선정합니다. LLM은 확정된 수치를 비즈니스 문장으로 만듭니다.</p><p style="margin-top:8px"><b>세아 적용:</b> 법인별 보유·유휴 대수, 매각 건수 추이, 자동화 도입률은 MongoDB가 계산합니다.</p></div>
+<div class="card"><h4><span class="tag b">교훈 2</span>자율성은 "탐색 그래프" 안에서</h4><p>에이전트가 다음 조사 대상을 스스로 고르되, 이동 가능한 분석 경로(전체 → 상품군 → 업종 → 광고주)는 시스템이 제한합니다.</p><p style="margin-top:8px"><b>세아 적용:</b> 그룹 → 국가 → 법인 → 공장 → 라인 → 설비 경로를 온톨로지로 정의합니다.</p></div>
+<div class="card"><h4><span class="tag a">교훈 3</span>섹션별로 필요한 맥락만</h4><p>요약에는 검증된 원인만, 추세에는 통계만, 기회·위험에는 관찰 신호까지 전달해 과잉 해석을 줄입니다.</p><p style="margin-top:8px"><b>세아 적용:</b> 경영 브리핑, 공장별 상세, 리스크 섹션의 입력을 분리합니다.</p></div>
+<div class="card"><h4><span class="tag r">교훈 4</span>품질을 측정해야 개선된다</h4><p>모든 실행 과정을 기록(trace)하고, 사람이 정한 평가 기준표(rubric)로 변경 전후를 비교합니다.</p><p style="margin-top:8px"><b>세아 적용:</b> 질문·조회·답변·근거를 모두 저장해 재현과 감사가 가능하게 합니다.</p></div>
+</div>
+<h3>LY Corp의 다섯 가지 분석 도구 → 세아 버전</h3>
+<table>
+<thead><tr><th style="width:20%">LY Corp 도구</th><th style="width:30%">원래 역할</th><th>세아에서의 의미 (예시 질문)</th></tr></thead>
+<tbody>
+<tr><td>drill_down</td><td>변화를 하위 단위로 분해, 주요 기여자 반환</td><td>"유휴 설비 증가분은 어느 법인·공장·설비 분류에서 나왔나?"</td></tr>
+<tr><td>compare_pattern</td><td>과거 추세로 신규·성장·감소·일시적·구조적 변화 분류</td><td>"이번 분기 매각 증가는 일시적인가, 공장 재편에 따른 구조적 변화인가?"</td></tr>
+<tr><td>entity_context</td><td>대상의 메타데이터·변경 이력 조회</td><td>"이 설비는 언제, 어떤 기안으로 취득했고 어디서 이관됐나?"</td></tr>
+<tr><td>peer_comparison</td><td>같은 그룹 평균과 비교</td><td>"베트남 공장의 자동화 비율은 같은 규모 다른 법인과 비교해 어떤가?"</td></tr>
+<tr><td>volume_decompose</td><td>변화를 물량 × 단가로 분해</td><td>"원가 상승은 수량 증가 때문인가, 단가 상승 때문인가?" (견적·구매 데이터 연결 후)</td></tr>
+</tbody></table>
+<p class="figcap">출처: LY Corporation Tech Blog, 「LLM에게 어디까지 맡길 것인가: AI 에이전트 기반 광고 분석 리포트 자동화」, 세아 적용 가안(data_architecture.md).</p>
+</section>
+
+<section id="arch">
+<div class="num">03 · 전체 구조</div>
+<h2>세아 AX 데이터 플랫폼: 다섯 단계로 흐르는 하나의 구조</h2>
+<p class="lead2">왼쪽의 원천 데이터가 정제를 거쳐 MongoDB Atlas 데이터 허브에 모이고, AI는 허브에 준비된 수치와 맥락을 꺼내 쓰며, 결과는 다시 허브에 저장되어 다음 분석에 재사용됩니다.</p>
+<div class="fig" role="img" aria-label="세아 AX 데이터 플랫폼 전체 아키텍처">
+<svg viewBox="0 0 1220 760" xmlns="http://www.w3.org/2000/svg" font-family="Apple SD Gothic Neo, Malgun Gothic, Arial, sans-serif">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#00684a"/></marker>
+<marker id="arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2f5fcf"/></marker>
+</defs>
+<!-- column titles -->
+<g font-size="15" font-weight="700" fill="#102b38">
+<text x="20" y="28">① 원천 데이터</text><text x="262" y="28">② 수집 · 정제</text><text x="486" y="28">③ MongoDB Atlas 데이터 허브</text><text x="878" y="28">④ 분석 · AI</text><text x="1066" y="28">⑤ 의사결정 활용</text>
+</g>
+<!-- sources -->
+<g font-size="13" fill="#102b38">
+<g><rect x="20" y="44" width="200" height="54" rx="9" fill="#fff" stroke="#c9d8da"/><text x="32" y="66" font-weight="700">글로벌 공장 자산원장</text><text x="32" y="86" fill="#5a6e77">Excel · 8개 법인 파일</text></g>
+<g><rect x="20" y="106" width="200" height="54" rx="9" fill="#fff" stroke="#c9d8da"/><text x="32" y="128" font-weight="700">재고 · 생산 실적</text><text x="32" y="148" fill="#5a6e77">ERP · MES · 일일 보고</text></g>
+<g><rect x="20" y="168" width="200" height="54" rx="9" fill="#fff" stroke="#c9d8da"/><text x="32" y="190" font-weight="700">견적 · 오더</text><text x="32" y="210" fill="#5a6e77">바이어 · 스타일 · 수량</text></g>
+<g><rect x="20" y="230" width="200" height="54" rx="9" fill="#fff" stroke="#c9d8da"/><text x="32" y="252" font-weight="700">기안 · 품의서</text><text x="32" y="272" fill="#5a6e77">PDF · 결재 이력</text></g>
+<g><rect x="20" y="292" width="200" height="54" rx="9" fill="#fff" stroke="#c9d8da"/><text x="32" y="314" font-weight="700">설계 · 테크팩 · BOM</text><text x="32" y="334" fill="#5a6e77">PDF · CAD · 자재 목록</text></g>
+<g><rect x="20" y="354" width="200" height="54" rx="9" fill="#fff" stroke="#c9d8da"/><text x="32" y="376" font-weight="700">구매 · 매각 이력</text><text x="32" y="396" fill="#5a6e77">Excel · PDF · 내부/외부</text></g>
+<g><rect x="20" y="416" width="200" height="54" rx="9" fill="#fff" stroke="#c9d8da"/><text x="32" y="438" font-weight="700">공장 개요 · 에너지</text><text x="32" y="458" fill="#5a6e77">면적 · 인원 · 전기료 · 유류비</text></g>
+<g><rect x="20" y="478" width="200" height="54" rx="9" fill="#fff" stroke="#c9d8da"/><text x="32" y="500" font-weight="700">법인별 주간보고</text><text x="32" y="520" fill="#5a6e77">PDF · 서술형 이슈</text></g>
+</g>
+<!-- ingest -->
+<g font-size="13" fill="#102b38">
+<rect x="250" y="44" width="200" height="488" rx="12" fill="#eef3fd" stroke="#c9d6f3"/>
+<g><rect x="264" y="60" width="172" height="76" rx="8" fill="#fff" stroke="#c9d6f3"/><text x="276" y="82" font-weight="700">AI 파서 (GPT, 기존 유지)</text><text x="276" y="102" fill="#5a6e77">엑셀 · PDF → 구조화</text><text x="276" y="122" fill="#5a6e77">원본 위치 함께 기록</text></g>
+<g><rect x="264" y="146" width="172" height="76" rx="8" fill="#fff" stroke="#c9d6f3"/><text x="276" y="168" font-weight="700">검증 규칙</text><text x="276" y="188" fill="#5a6e77">단위 · 통화 · 날짜</text><text x="276" y="208" fill="#5a6e77">코드 중복 · 누락 탐지</text></g>
+<g><rect x="264" y="232" width="172" height="76" rx="8" fill="#fff" stroke="#c9d6f3"/><text x="276" y="254" font-weight="700">표준화 · 분류 사전</text><text x="276" y="274" fill="#5a6e77">조직 별칭 매핑</text><text x="276" y="294" fill="#5a6e77">설비 분류(미싱·자동화)</text></g>
+<g><rect x="264" y="318" width="172" height="76" rx="8" fill="#fff" stroke="#c9d6f3"/><text x="276" y="340" font-weight="700">품질 검토 대기열</text><text x="276" y="360" fill="#5a6e77">AI 불확실 항목은</text><text x="276" y="380" fill="#5a6e77">담당자가 확정</text></g>
+<g><rect x="264" y="404" width="172" height="112" rx="8" fill="#102b38"/><text x="276" y="428" font-weight="700" fill="#b1ff05">적재 완료 신호</text><text x="276" y="450" fill="#e3f0ed">data_version 확정 후</text><text x="276" y="470" fill="#e3f0ed">집계 · 분석 시작</text><text x="276" y="494" fill="#9fb8b4" font-size="12">부분 적재된 데이터로</text><text x="276" y="510" fill="#9fb8b4" font-size="12">리포트를 만들지 않음</text></g>
+</g>
+<!-- hub -->
+<g font-size="13" fill="#102b38">
+<rect x="472" y="44" width="380" height="488" rx="14" fill="#e5f5eb" stroke="#00684a" stroke-width="2"/>
+<g><rect x="488" y="60" width="348" height="74" rx="9" fill="#fff" stroke="#b6dcc6"/><text x="502" y="82" font-weight="700">ⓐ 원본 보관층 — Raw / Source</text><text x="502" y="102" fill="#5a6e77">파일 · 행 · 셀 원문, 파싱 결과, 체크섬</text><text x="502" y="121" fill="#5a6e77">→ 모든 숫자를 원본 위치까지 추적</text></g>
+<g><rect x="488" y="142" width="348" height="74" rx="9" fill="#fff" stroke="#b6dcc6"/><text x="502" y="164" font-weight="700">ⓑ 핵심 엔티티층 — 온톨로지</text><text x="502" y="184" fill="#5a6e77">법인 · 공장 · 라인 · 설비 · 자재 · 오더 · 문서</text><text x="502" y="203" fill="#5a6e77">→ 관계와 이력을 가진 "회사의 지도"</text></g>
+<g><rect x="488" y="224" width="348" height="74" rx="9" fill="#fff" stroke="#b6dcc6"/><text x="502" y="246" font-weight="700">ⓒ KPI층 — 사전 집계</text><text x="502" y="266" fill="#5a6e77">기간 × 조직 × 품목별 지표, 전년·전월 대비</text><text x="502" y="285" fill="#5a6e77">→ 경영진 질문의 대부분을 즉시 응답</text></g>
+<g><rect x="488" y="306" width="348" height="74" rx="9" fill="#fff" stroke="#b6dcc6"/><text x="502" y="328" font-weight="700">ⓓ 맥락 · 지식층 — Search / Vector</text><text x="502" y="348" fill="#5a6e77">변경 이력, 기안 · 보고서 문서 조각, 정책</text><text x="502" y="367" fill="#5a6e77">→ "왜"를 설명할 근거 문서 검색</text></g>
+<g><rect x="488" y="388" width="348" height="74" rx="9" fill="#fff" stroke="#b6dcc6"/><text x="502" y="410" font-weight="700">ⓔ 분석 결과층 — Cases / Reports</text><text x="502" y="430" fill="#5a6e77">탐지 케이스, 원인 경로, 근거 등급, 리포트</text><text x="502" y="449" fill="#5a6e77">→ 재현 · 재분석 · 과거 사례 재사용</text></g>
+<text x="488" y="490" font-size="12.5" fill="#00684a" font-weight="700">하나의 데이터베이스에서 문서 · 집계 · 전문 검색 · 벡터 검색</text>
+<text x="488" y="510" font-size="12.5" fill="#00684a" font-weight="700">권한 · 백업 · 감사를 함께 관리</text>
+</g>
+<!-- AI -->
+<g font-size="13" fill="#102b38">
+<g><rect x="872" y="44" width="170" height="104" rx="9" fill="#fff" stroke="#c9d8da"/><text x="884" y="66" font-weight="700">탐지 워커</text><text x="884" y="86" fill="#5a6e77">규모 · 변화량 기준으로</text><text x="884" y="104" fill="#5a6e77">조사 대상 자동 선정</text><text x="884" y="126" fill="#00684a" font-size="12">예: 유휴 급증 공장</text></g>
+<g><rect x="872" y="158" width="170" height="124" rx="9" fill="#fff" stroke="#c9d8da"/><text x="884" y="180" font-weight="700">분석 도구 API</text><text x="884" y="200" fill="#5a6e77">drill_down 등 5개 도구</text><text x="884" y="218" fill="#5a6e77">미리 정의한 집계만 실행</text><text x="884" y="240" fill="#a86a12" font-size="12">가드레일: 깊이 3 · 조회 15회</text><text x="884" y="258" fill="#a86a12" font-size="12">· 90초 · 권한 필터</text></g>
+<g><rect x="872" y="292" width="170" height="104" rx="9" fill="#102b38"/><text x="884" y="314" font-weight="700" fill="#b1ff05">LLM 에이전트</text><text x="884" y="334" fill="#e3f0ed">다음 조사 경로 선택</text><text x="884" y="352" fill="#e3f0ed">검증된 수치를 문장화</text><text x="884" y="374" fill="#9fb8b4" font-size="12">계산은 하지 않음</text></g>
+<g><rect x="872" y="406" width="170" height="126" rx="9" fill="#fff" stroke="#c9d8da"/><text x="884" y="428" font-weight="700">근거 검증 · 평가</text><text x="884" y="448" fill="#5a6e77">확정 / 주의 / 관찰</text><text x="884" y="466" fill="#5a6e77">평가 기준표 · 실행 기록</text><text x="884" y="490" fill="#5a6e77">불확실 시 사람 검토</text></g>
+</g>
+<!-- consume -->
+<g font-size="13" fill="#102b38">
+<g><rect x="1062" y="44" width="140" height="110" rx="9" fill="#fff4df" stroke="#ecd3a5"/><text x="1074" y="68" font-weight="700">C-Level</text><text x="1074" y="88" font-weight="700">경영 브리핑</text><text x="1074" y="110" fill="#5a6e77">주간 · 월간 자동</text><text x="1074" y="130" fill="#5a6e77">핵심 변화와 원인</text></g>
+<g><rect x="1062" y="164" width="140" height="110" rx="9" fill="#fff4df" stroke="#ecd3a5"/><text x="1074" y="188" font-weight="700">대화형 질의</text><text x="1074" y="210" fill="#5a6e77">"베트남 유휴 미싱</text><text x="1074" y="230" fill="#5a6e77">몇 대, 왜?"</text><text x="1074" y="252" fill="#5a6e77">근거 링크 포함</text></g>
+<g><rect x="1062" y="284" width="140" height="110" rx="9" fill="#fff4df" stroke="#ecd3a5"/><text x="1074" y="308" font-weight="700">대시보드</text><text x="1074" y="330" fill="#5a6e77">법인 · 공장 · 설비</text><text x="1074" y="350" fill="#5a6e77">KPI 드릴다운</text></g>
+<g><rect x="1062" y="404" width="140" height="128" rx="9" fill="#fff4df" stroke="#ecd3a5"/><text x="1074" y="428" font-weight="700">알림 · 액션</text><text x="1074" y="450" fill="#5a6e77">위험 신호 알림</text><text x="1074" y="470" fill="#5a6e77">Teams · 메일</text><text x="1074" y="490" fill="#5a6e77">후속 과제 등록</text></g>
+</g>
+<!-- arrows -->
+<g stroke="#00684a" stroke-width="2.2" fill="none" marker-end="url(#ar)">
+<path d="M222 288 H246"/><path d="M452 288 H468"/><path d="M854 160 H868"/><path d="M854 288 H868"/><path d="M1044 104 H1058"/><path d="M1044 230 H1058"/><path d="M1044 344 H1058"/><path d="M1044 468 H1058"/>
+<path d="M957 150 V156"/><path d="M957 284 V290"/><path d="M957 398 V404"/>
+</g>
+<g stroke="#2f5fcf" stroke-width="2" fill="none" stroke-dasharray="6 5" marker-end="url(#arb)">
+<path d="M872 470 C 840 470, 860 425, 838 425"/>
+</g>
+<text x="760" y="555" font-size="12.5" fill="#2f5fcf" font-weight="700">검증된 분석 결과를 허브에 다시 저장 → 다음 질문에 재사용</text>
+<!-- governance -->
+<rect x="20" y="580" width="1182" height="70" rx="12" fill="#102b38"/>
+<text x="40" y="608" font-size="15" font-weight="700" fill="#b1ff05">공통 거버넌스</text>
+<text x="40" y="632" font-size="13.5" fill="#e3f0ed">법인별 접근 권한 · 원가/구매가 열람 권한 분리 · 질문 · 조회 · 답변 감사 로그 · 지표 정의 버전 관리 · 개인정보 마스킹 · 백업과 복구</text>
+<!-- data temperature -->
+<g font-size="13">
+<rect x="20" y="672" width="380" height="64" rx="10" fill="#fdecea" stroke="#f2c6bd"/><text x="36" y="697" font-weight="700" fill="#8a2a17">Hot · 최근 데이터</text><text x="36" y="719" fill="#5a6e77">KPI · 현재 설비 · 진행 중 오더 → 고성능 클러스터</text>
+<rect x="420" y="672" width="380" height="64" rx="10" fill="#fff4df" stroke="#ecd3a5"/><text x="436" y="697" font-weight="700" fill="#7a4c0b">Warm · 분석 기간 데이터</text><text x="436" y="719" fill="#5a6e77">3~5년 이력 · 문서 조각 → 인덱스 · 검색 노드</text>
+<rect x="820" y="672" width="382" height="64" rx="10" fill="#eef3fd" stroke="#c9d6f3"/><text x="836" y="697" font-weight="700" fill="#264f9e">Cold · 장기 보관 데이터</text><text x="836" y="719" fill="#5a6e77">원본 파일 · 오래된 이력 → 객체 스토리지 · 아카이브</text>
+</g>
+</svg>
+</div>
+<p class="figcap">그림 1. 세아 AX 데이터 플랫폼 전체 구조(가안). ③의 다섯 층은 MongoDB Atlas 안에서 컬렉션 그룹으로 구분되며, 한 시스템에서 운영됩니다.</p>
+
+<h3>각 층이 경영진에게 주는 가치</h3>
+<table>
+<thead><tr><th style="width:22%">층</th><th style="width:38%">무엇을 담나</th><th>경영 관점의 효과</th></tr></thead>
+<tbody>
+<tr><td>ⓐ 원본 보관층</td><td>원본 파일, 행·셀 단위 원문, AI 파싱 결과</td><td>"이 숫자는 어디서 왔나?"에 클릭 한 번으로 원본 엑셀 행까지 제시 → 신뢰 확보</td></tr>
+<tr><td>ⓑ 온톨로지층</td><td>법인·공장·설비·자재·오더·문서와 그 관계</td><td>조직·용어 기준이 하나로 통일되어 보고서마다 숫자가 다른 문제가 사라짐</td></tr>
+<tr><td>ⓒ KPI층</td><td>기간·조직·품목별 사전 집계 지표</td><td>자주 묻는 질문은 즉시 답변, AI 비용과 오류를 동시에 줄임</td></tr>
+<tr><td>ⓓ 맥락·지식층</td><td>변경 이력, 기안·주간보고 문서, 정책</td><td>숫자의 "이유"를 문서 근거와 함께 설명</td></tr>
+<tr><td>ⓔ 분석 결과층</td><td>분석 케이스, 원인 경로, 리포트, 평가 결과</td><td>과거 판단을 재사용하고, 의사결정의 근거를 감사할 수 있음</td></tr>
+</tbody></table>
+</section>
+
+<section id="speed">
+<div class="num">04 · 대용량 데이터 전략</div>
+<h2>응답을 빠르게: "모든 질문을 매번 계산하지 않는다"</h2>
+<p class="lead2">글로벌 공장의 데이터가 쌓이면 원본을 그때그때 읽어서 답하는 방식은 느리고 비쌉니다. LY Corp도 상위 KPI를 매번 쿼리하지 않고 사전 집계 데이터에서 출발해, 부족할 때만 추가 조회합니다. 세아도 질문을 세 가지 속도 등급으로 나눠 처리합니다.</p>
+<div class="fig" role="img" aria-label="질문 유형별 응답 속도 등급">
+<svg viewBox="0 0 1200 430" xmlns="http://www.w3.org/2000/svg" font-family="Apple SD Gothic Neo, Malgun Gothic, Arial, sans-serif">
+<defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#00684a"/></marker></defs>
+<rect x="20" y="20" width="200" height="390" rx="12" fill="#102b38"/>
+<text x="40" y="58" font-size="16" font-weight="700" fill="#b1ff05">경영진 질문</text>
+<text x="40" y="92" font-size="13" fill="#e3f0ed">"법인별 자동화 설비</text><text x="40" y="112" font-size="13" fill="#e3f0ed">보유 현황은?"</text>
+<text x="40" y="160" font-size="13" fill="#e3f0ed">"인도네시아 유휴</text><text x="40" y="180" font-size="13" fill="#e3f0ed">설비가 왜 늘었나?"</text>
+<text x="40" y="228" font-size="13" fill="#e3f0ed">"5년간 설비 이동과</text><text x="40" y="248" font-size="13" fill="#e3f0ed">생산성 관계는?"</text>
+<text x="40" y="310" font-size="12" fill="#9fb8b4">질문 의도를 먼저 분류해</text><text x="40" y="328" font-size="12" fill="#9fb8b4">가장 빠른 경로로 보냅니다</text>
+<g stroke="#00684a" stroke-width="2.2" fill="none" marker-end="url(#ar2)"><path d="M222 100 H268"/><path d="M222 170 C 240 170, 245 215, 268 215"/><path d="M222 238 C 240 238, 245 340, 268 340"/></g>
+<g font-size="13">
+<rect x="272" y="30" width="910" height="110" rx="12" fill="#e5f5eb" stroke="#b6dcc6"/>
+<text x="292" y="62" font-size="17" font-weight="700" fill="#00684a">등급 1 · 즉시 응답</text><text x="292" y="86" fill="#102b38">사전 집계된 KPI 컬렉션에서 조회 · 인덱스로 바로 찾음</text>
+<text x="292" y="110" fill="#5a6e77">대상: 보유 대수 · 유휴율 · 매각 건수 · 전년/전월 대비 · 순위</text>
+<rect x="960" y="50" width="200" height="70" rx="10" fill="#fff" stroke="#b6dcc6"/><text x="976" y="78" font-weight="700" fill="#00684a">설계 목표: 1초 내외</text><text x="976" y="100" fill="#5a6e77">질문의 대부분을 여기서</text>
+<rect x="272" y="160" width="910" height="110" rx="12" fill="#fff4df" stroke="#ecd3a5"/>
+<text x="292" y="192" font-size="17" font-weight="700" fill="#7a4c0b">등급 2 · 대화형 원인 분석</text><text x="292" y="216" fill="#102b38">에이전트가 분석 도구로 하위 단위를 따라 내려가며 집계 · 이력 · 문서를 조회</text>
+<text x="292" y="240" fill="#5a6e77">가드레일: 탐색 깊이 3 · 최대 15회 조회 · 90초 제한 · 도구별 기간 · 반환 건수 제한</text>
+<rect x="960" y="180" width="200" height="70" rx="10" fill="#fff" stroke="#ecd3a5"/><text x="976" y="208" font-weight="700" fill="#7a4c0b">설계 목표: 수십 초</text><text x="976" y="230" fill="#5a6e77">근거와 함께 답변</text>
+<rect x="272" y="290" width="910" height="110" rx="12" fill="#eef3fd" stroke="#c9d6f3"/>
+<text x="292" y="322" font-size="17" font-weight="700" fill="#264f9e">등급 3 · 비동기 심층 분석</text><text x="292" y="346" fill="#102b38">장기 원시 이력 · 대규모 탐색은 별도 작업으로 실행 후 결과를 KPI · 분석 케이스로 저장</text>
+<text x="292" y="370" fill="#5a6e77">예: 다년간 설비 이동 · 생산 실적 상관 분석 → 완료 시 알림, 다음부터는 등급 1로 응답</text>
+<rect x="960" y="310" width="200" height="70" rx="10" fill="#fff" stroke="#c9d6f3"/><text x="976" y="338" font-weight="700" fill="#264f9e">분 ~ 시간 단위</text><text x="976" y="360" fill="#5a6e77">완료 후 알림</text>
+</g>
+</svg>
+</div>
+<p class="figcap">그림 2. 질문 유형별 응답 경로. 응답 시간은 설계 목표이며 실제 데이터 규모와 클러스터 사양으로 검증이 필요합니다.</p>
+
+<h3>대용량에서도 빠르게 유지하는 6가지 원칙</h3>
+<div class="grid3">
+<div class="card"><h4>1. 미리 집계해 둔다</h4><p>적재가 끝나면 기간·조직·품목별 지표를 계산해 KPI 컬렉션에 저장합니다. 이동평균·순위·누적값도 데이터베이스가 계산합니다.</p></div>
+<div class="card"><h4>2. 적재 완료 후 분석한다</h4><p>파일 일부만 들어온 상태에서 리포트를 만들지 않도록 <b>데이터 버전</b>을 확정한 뒤 집계·분석을 시작합니다.</p></div>
+<div class="card"><h4>3. 수정 가능한 구조로 둔다</h4><p>원장은 소급 정정이 잦습니다. 과거 값을 다시 계산하고 덮어쓸 수 있는 일반 컬렉션 구조로 KPI를 관리합니다.</p></div>
+<div class="card"><h4>4. 자주 묻는 길에 인덱스</h4><p>"법인 + 기간 + 분류"처럼 질문 패턴이 정해지면 그 순서대로 인덱스를 만들어 대용량에서도 일정한 속도를 유지합니다.</p></div>
+<div class="card"><h4>5. 데이터 온도를 나눈다</h4><p>최근 데이터는 고성능 저장소에, 오래된 원본과 이력은 저비용 보관소로 자동 이동해 비용을 관리합니다.</p></div>
+<div class="card"><h4>6. 큰 탐색은 따로 돌린다</h4><p>준비된 집계로 답할 수 없는 대규모 분석은 비동기로 처리하고, 결과를 다시 허브에 저장해 재사용합니다.</p></div>
+</div>
+<div class="callout blue"><b>AI 비용 관점:</b> LLM에 원본 엑셀 전체를 넣는 대신, 이미 계산된 몇 줄의 사실만 전달하면 토큰 사용량과 응답 시간이 함께 줄고 답변의 일관성은 높아집니다.</div>
+</section>
+
+<section id="ontology">
+<div class="num">05 · 온톨로지</div>
+<h2>회사의 지도: AI가 따라갈 수 있는 업무 대상과 관계</h2>
+<p class="lead2">온톨로지는 "우리 회사에는 어떤 대상이 있고, 서로 어떻게 연결되는가"를 정의한 지도입니다. 이 지도가 있으면 AI는 정해진 길(관계)을 따라 원인을 찾아 내려가고, 의미가 다른 데이터를 잘못 연결하지 않습니다. LY Corp의 "탐색 그래프"를 세아의 업무에 맞게 확장한 모습입니다.</p>
+<div class="fig" role="img" aria-label="세아 업무 온톨로지 관계도">
+<svg viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" font-family="Apple SD Gothic Neo, Malgun Gothic, Arial, sans-serif">
+<defs><marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#4f6b74"/></marker></defs>
+<!-- lane labels -->
+<g font-size="12" font-weight="700" fill="#5a6e77">
+<text x="16" y="24">영업 · 설계 흐름</text><text x="16" y="250">조직 · 설비 흐름 (현재 PoV 범위)</text><text x="16" y="420">문서 · 구매 · 처분 흐름</text>
+</g>
+<rect x="10" y="262" width="1180" height="96" rx="12" fill="#e5f5eb" stroke="#b6dcc6" stroke-dasharray="5 4"/>
+<!-- edges -->
+<g stroke="#4f6b74" stroke-width="1.8" fill="none" marker-end="url(#ar3)">
+<path d="M190 82 H243"/><path d="M420 82 H473"/><path d="M650 82 H703"/>
+<path d="M880 82 H933"/>
+<path d="M1020 110 V163"/><path d="M935 192 H880"/><path d="M705 192 H650"/>
+<path d="M565 220 L 510 282"/>
+<path d="M652 100 C 700 140, 700 240, 622 282"/>
+<path d="M190 310 H243"/><path d="M420 310 H473"/><path d="M650 310 H703"/><path d="M880 310 H933"/>
+<path d="M650 470 H703"/><path d="M790 442 V340"/><path d="M880 452 L 990 220"/>
+<path d="M1020 442 L 860 338"/>
+<path d="M335 442 V340"/><path d="M135 442 L 300 340"/>
+</g>
+<g font-size="11.5" fill="#4f6b74">
+<text x="196" y="74">견적 요청</text><text x="426" y="74">오더 전환</text><text x="656" y="74">생산 대상</text><text x="886" y="74">설계 문서</text>
+<text x="1028" y="142">BOM 소요</text><text x="887" y="184">보관</text><text x="657" y="184">위치</text>
+<text x="664" y="250">생산 배정</text>
+<text x="196" y="302">운영</text><text x="426" y="302">구성</text><text x="656" y="302">배치</text><text x="886" y="302">분류됨</text>
+<text x="656" y="462">승인</text><text x="798" y="400">취득</text><text x="930" y="360">조달</text><text x="962" y="408">처분</text>
+<text x="343" y="400">보고 · 언급</text><text x="160" y="400">지표</text>
+</g>
+<!-- nodes -->
+<g font-size="14" font-weight="700" fill="#102b38">
+<g><rect x="20" y="54" width="170" height="56" rx="10" fill="#fff4df" stroke="#ecd3a5"/><text x="36" y="78">바이어</text><text x="36" y="98" font-size="11.5" font-weight="400" fill="#5a6e77">customers</text></g>
+<g><rect x="250" y="54" width="170" height="56" rx="10" fill="#fff4df" stroke="#ecd3a5"/><text x="266" y="78">견적</text><text x="266" y="98" font-size="11.5" font-weight="400" fill="#5a6e77">quotes · 단가 · 수량</text></g>
+<g><rect x="480" y="54" width="170" height="56" rx="10" fill="#fff4df" stroke="#ecd3a5"/><text x="496" y="78">오더</text><text x="496" y="98" font-size="11.5" font-weight="400" fill="#5a6e77">orders · 납기</text></g>
+<g><rect x="710" y="54" width="170" height="56" rx="10" fill="#fff4df" stroke="#ecd3a5"/><text x="726" y="78">스타일</text><text x="726" y="98" font-size="11.5" font-weight="400" fill="#5a6e77">styles · 품목</text></g>
+<g><rect x="940" y="54" width="170" height="56" rx="10" fill="#fff4df" stroke="#ecd3a5"/><text x="956" y="78">설계 · 테크팩</text><text x="956" y="98" font-size="11.5" font-weight="400" fill="#5a6e77">designs · BOM</text></g>
+<g><rect x="940" y="164" width="170" height="56" rx="10" fill="#fff4df" stroke="#ecd3a5"/><text x="956" y="188">자재</text><text x="956" y="208" font-size="11.5" font-weight="400" fill="#5a6e77">materials</text></g>
+<g><rect x="710" y="164" width="170" height="56" rx="10" fill="#fff4df" stroke="#ecd3a5"/><text x="726" y="188">재고</text><text x="726" y="208" font-size="11.5" font-weight="400" fill="#5a6e77">inventory · 위치별</text></g>
+<g><rect x="480" y="164" width="170" height="56" rx="10" fill="#fff" stroke="#c9d8da"/><text x="496" y="188">창고 · 보관 위치</text><text x="496" y="208" font-size="11.5" font-weight="400" fill="#5a6e77">locations</text></g>
+<g><rect x="20" y="282" width="170" height="56" rx="10" fill="#fff" stroke="#00684a" stroke-width="2"/><text x="36" y="306">법인</text><text x="36" y="326" font-size="11.5" font-weight="400" fill="#5a6e77">국가 · 그룹 상위 관계</text></g>
+<g><rect x="250" y="282" width="170" height="56" rx="10" fill="#fff" stroke="#00684a" stroke-width="2"/><text x="266" y="306">공장</text><text x="266" y="326" font-size="11.5" font-weight="400" fill="#5a6e77">sites · 면적 · 인원</text></g>
+<g><rect x="480" y="282" width="170" height="56" rx="10" fill="#fff" stroke="#00684a" stroke-width="2"/><text x="496" y="306">라인 · 부서</text><text x="496" y="326" font-size="11.5" font-weight="400" fill="#5a6e77">departments</text></g>
+<g><rect x="710" y="282" width="170" height="56" rx="10" fill="#fff" stroke="#00684a" stroke-width="2"/><text x="726" y="306">설비 · 자산</text><text x="726" y="326" font-size="11.5" font-weight="400" fill="#5a6e77">assets · 상태 이력</text></g>
+<g><rect x="940" y="282" width="170" height="56" rx="10" fill="#fff" stroke="#00684a" stroke-width="2"/><text x="956" y="306">설비 분류</text><text x="956" y="326" font-size="11.5" font-weight="400" fill="#5a6e77">미싱(본봉 등) · 자동화</text></g>
+<g><rect x="20" y="442" width="170" height="56" rx="10" fill="#eef3fd" stroke="#c9d6f3"/><text x="36" y="466">공장 개요 · 에너지</text><text x="36" y="486" font-size="11.5" font-weight="400" fill="#5a6e77">전기료 · 유류비 · 임대료</text></g>
+<g><rect x="250" y="442" width="170" height="56" rx="10" fill="#eef3fd" stroke="#c9d6f3"/><text x="266" y="466">주간보고 · 문서</text><text x="266" y="486" font-size="11.5" font-weight="400" fill="#5a6e77">documents · 문서 조각</text></g>
+<g><rect x="480" y="442" width="170" height="56" rx="10" fill="#eef3fd" stroke="#c9d6f3"/><text x="496" y="466">기안 · 품의</text><text x="496" y="486" font-size="11.5" font-weight="400" fill="#5a6e77">approvals · 결재 이력</text></g>
+<g><rect x="710" y="442" width="170" height="56" rx="10" fill="#eef3fd" stroke="#c9d6f3"/><text x="726" y="466">구매</text><text x="726" y="486" font-size="11.5" font-weight="400" fill="#5a6e77">purchases</text></g>
+<g><rect x="940" y="442" width="170" height="56" rx="10" fill="#eef3fd" stroke="#c9d6f3"/><text x="956" y="466">매각 · 이관</text><text x="956" y="486" font-size="11.5" font-weight="400" fill="#5a6e77">내부(법인 간) · 외부</text></g>
+</g>
+<text x="20" y="540" font-size="12" fill="#5a6e77">녹색 테두리: 현재 PoV 샘플(자산원장 · 매각)로 바로 구축 가능한 범위 · 주황: 견적 · 설계 · 재고 연결 시 확장 · 파랑: 문서 · 구매 · 처분 이력</text>
+</svg>
+</div>
+<p class="figcap">그림 3. 세아 업무 온톨로지(가안). 각 상자는 MongoDB 컬렉션 하나에 대응하고, 화살표는 AI가 이동할 수 있는 분석 경로입니다.</p>
+
+<div class="grid2">
+<div class="card"><h4>온톨로지가 답하게 해 주는 질문</h4><ul>
+<li>"이 오더는 어느 공장 · 어느 라인에서 생산되며, 그 라인의 자동화 설비 비율은?"</li>
+<li>"이 설비는 어떤 기안으로 구매되었고, 지금 어느 법인에서 유휴 상태인가?"</li>
+<li>"법인 간 내부 이관된 설비가 이관 후 실제로 가동되고 있는가?"</li>
+<li>"BOM상 핵심 자재의 공장별 재고가 다음 달 오더를 감당하는가?"</li></ul></div>
+<div class="card amber"><h4>먼저 고정해야 할 "공통 언어"</h4><ul>
+<li><b>조직 기준:</b> 그룹 → 국가 → 법인 → 공장 → 부서의 공식 목록과 별칭</li>
+<li><b>보유의 정의:</b> 사용중 · 유휴 · 불용 · 대여 · AS 중 무엇을 보유로 셀지</li>
+<li><b>분류 체계:</b> 미싱(본봉 · 삼봉 · 오바 · 특종) · 자동화 · 기타의 확장</li>
+<li><b>금액 기준:</b> 통화, 환율 기준일, 원가 열람 권한</li></ul></div>
+</div>
+
+<h3>샘플 데이터로 본 현재 모습: 원장별 자산 상태 구성</h3>
+<div class="legend"><span><i style="background:#00a35c"></i>사용중</span><span><i style="background:#e0a32e"></i>유휴</span><span><i style="background:#2f5fcf"></i>매각</span><span><i style="background:#9aa9ae"></i>기타(불용 · 폐기 · AS · 대여 등)</span></div>
+<div class="rows">
+<div class="r"><b>GTM</b><div class="bar" title="사용중 85% · 유휴 8% · 매각 2% · 기타 6%"><span style="width:84.50%;background:#00a35c"></span><span style="width:8.02%;background:#e0a32e"></span><span style="width:1.94%;background:#2f5fcf"></span><span style="width:5.54%;background:#9aa9ae"></span></div><em>11,823</em></div>
+<div class="r"><b>HTI</b><div class="bar" title="사용중 31% · 유휴 53% · 매각 10% · 기타 6%"><span style="width:30.66%;background:#00a35c"></span><span style="width:52.99%;background:#e0a32e"></span><span style="width:10.22%;background:#2f5fcf"></span><span style="width:6.13%;background:#9aa9ae"></span></div><em>14,064</em></div>
+<div class="r"><b>IDN</b><div class="bar" title="사용중 0% · 유휴 3% · 매각 97% · 기타 0%"><span style="width:0.00%;background:#00a35c"></span><span style="width:3.26%;background:#e0a32e"></span><span style="width:96.74%;background:#2f5fcf"></span><span style="width:0.00%;background:#9aa9ae"></span></div><em>8,923</em></div>
+<div class="r"><b>IDN_2</b><div class="bar" title="사용중 96% · 유휴 0% · 매각 3% · 기타 1%"><span style="width:95.93%;background:#00a35c"></span><span style="width:0.00%;background:#e0a32e"></span><span style="width:3.48%;background:#2f5fcf"></span><span style="width:0.59%;background:#9aa9ae"></span></div><em>13,864</em></div>
+<div class="r"><b>NIC</b><div class="bar" title="사용중 90% · 유휴 0% · 매각 9% · 기타 1%"><span style="width:90.14%;background:#00a35c"></span><span style="width:0.00%;background:#e0a32e"></span><span style="width:9.30%;background:#2f5fcf"></span><span style="width:0.56%;background:#9aa9ae"></span></div><em>12,243</em></div>
+<div class="r"><b>VTN_EINS</b><div class="bar" title="사용중 65% · 유휴 9% · 매각 25% · 기타 1%"><span style="width:65.50%;background:#00a35c"></span><span style="width:8.68%;background:#e0a32e"></span><span style="width:25.13%;background:#2f5fcf"></span><span style="width:0.69%;background:#9aa9ae"></span></div><em>11,274</em></div>
+<div class="r"><b>VTN_S&amp;H</b><div class="bar" title="사용중 89% · 유휴 3% · 매각 8% · 기타 0%"><span style="width:89.04%;background:#00a35c"></span><span style="width:2.95%;background:#e0a32e"></span><span style="width:8.00%;background:#2f5fcf"></span><span style="width:0.00%;background:#9aa9ae"></span></div><em>11,618</em></div>
+<div class="r"><b>VTN_WINNERS</b><div class="bar" title="사용중 87% · 유휴 0% · 매각 8% · 기타 5%"><span style="width:86.64%;background:#00a35c"></span><span style="width:0.00%;background:#e0a32e"></span><span style="width:7.87%;background:#2f5fcf"></span><span style="width:5.49%;background:#9aa9ae"></span></div><em>7,102</em></div>
+</div>
+<p class="figcap">자산원장 8개 파일의 행 수 기준 구성비(오른쪽 숫자는 행 수). 이름은 원장 파일 코드입니다. HTI 원장은 유휴 비율이 높고, IDN 원장은 대부분 매각 상태로 원장마다 관리 목적이 다를 수 있어 조직 기준 확정이 필요합니다.</p>
+</section>
+
+<section id="scenario">
+<div class="num">06 · 질문 시나리오</div>
+<h2>경영진 질문 하나가 처리되는 과정</h2>
+<p class="lead2">LY Corp의 "매출이 전일 대비 6.70M 증가, 왜?"를 세아의 질문으로 바꾸면 다음과 같습니다. 숫자는 샘플 데이터의 실제 집계이며, 원인은 데이터로 검증하기 전까지 <b>가설</b>로 표시됩니다.</p>
+<div class="callout amber" style="font-size:18px"><b>질문:</b> "그룹 전체 유휴 설비 중 어디에 몰려 있고, 왜 그런가?"</div>
+<div class="fig" role="img" aria-label="질문 처리 단계">
+<svg viewBox="0 0 1200 230" xmlns="http://www.w3.org/2000/svg" font-family="Apple SD Gothic Neo, Malgun Gothic, Arial, sans-serif">
+<defs><marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#00684a"/></marker></defs>
+<g font-size="13" fill="#102b38">
+<g><rect x="10" y="20" width="180" height="190" rx="12" fill="#102b38"/><text x="26" y="48" font-weight="700" fill="#b1ff05" font-size="14">STEP 1 · 확인</text><text x="26" y="76" fill="#e3f0ed">적재 완료 · 데이터</text><text x="26" y="96" fill="#e3f0ed">버전 확인</text><text x="26" y="126" fill="#e3f0ed">KPI에서 유휴 총량</text><text x="26" y="146" fill="#e3f0ed">· 원장별 분포 조회</text><text x="26" y="184" fill="#9fb8b4" font-size="12">DB 계산 · AI 계산 없음</text></g>
+<g><rect x="210" y="20" width="180" height="190" rx="12" fill="#e5f5eb" stroke="#b6dcc6"/><text x="226" y="48" font-weight="700" fill="#00684a" font-size="14">STEP 2 · 분해</text><text x="226" y="76">drill_down</text><text x="226" y="100" fill="#5a6e77">원장 → 공장 → 부서</text><text x="226" y="120" fill="#5a6e77">→ 설비 분류로</text><text x="226" y="140" fill="#5a6e77">기여 큰 순 정렬</text></g>
+<g><rect x="410" y="20" width="180" height="190" rx="12" fill="#e5f5eb" stroke="#b6dcc6"/><text x="426" y="48" font-weight="700" fill="#00684a" font-size="14">STEP 3 · 패턴</text><text x="426" y="76">compare_pattern</text><text x="426" y="100" fill="#5a6e77">유휴 전환 시점 추이</text><text x="426" y="120" fill="#5a6e77">일시적 vs 구조적</text><text x="426" y="148" fill="#a86a12" font-size="12">상태 이력 부재 시</text><text x="426" y="166" fill="#a86a12" font-size="12">"주의"로 표시</text></g>
+<g><rect x="610" y="20" width="180" height="190" rx="12" fill="#e5f5eb" stroke="#b6dcc6"/><text x="626" y="48" font-weight="700" fill="#00684a" font-size="14">STEP 4 · 맥락</text><text x="626" y="76">entity_context</text><text x="626" y="100" fill="#5a6e77">비고 · 이관 · 매각</text><text x="626" y="120" fill="#5a6e77">이력, 주간보고</text><text x="626" y="140" fill="#5a6e77">문서 검색</text></g>
+<g><rect x="810" y="20" width="180" height="190" rx="12" fill="#e5f5eb" stroke="#b6dcc6"/><text x="826" y="48" font-weight="700" fill="#00684a" font-size="14">STEP 5 · 비교</text><text x="826" y="76">peer_comparison</text><text x="826" y="100" fill="#5a6e77">비슷한 규모 · 설비</text><text x="826" y="120" fill="#5a6e77">구성 공장의</text><text x="826" y="140" fill="#5a6e77">유휴율과 비교</text></g>
+<g><rect x="1010" y="20" width="180" height="190" rx="12" fill="#fff4df" stroke="#ecd3a5"/><text x="1026" y="48" font-weight="700" fill="#7a4c0b" font-size="14">STEP 6 · 보고</text><text x="1026" y="76" fill="#5a6e77">근거 등급 판정</text><text x="1026" y="96" fill="#5a6e77">후 문장 생성</text><text x="1026" y="126" fill="#5a6e77">결과 · 근거 ·</text><text x="1026" y="146" fill="#5a6e77">실행 기록 저장</text></g>
+</g>
+<g stroke="#00684a" stroke-width="2.2" marker-end="url(#ar4)"><path d="M192 115 H206"/><path d="M392 115 H406"/><path d="M592 115 H606"/><path d="M792 115 H806"/><path d="M992 115 H1006"/></g>
+</svg>
+</div>
+<p class="figcap">그림 4. 에이전트 분석 흐름. STEP 2~5의 순서는 고정이 아니며, 직전 결과에 따라 에이전트가 다음 도구를 고릅니다(가드레일 범위 안에서).</p>
+
+<h3>자동 생성되는 경영 브리핑 예시</h3>
+<div class="report">
+<h5>Executive Snapshot</h5>
+그룹 자산원장 기준 유휴 자산은 <b>10,014건</b>이며, 이 중 <b>74%(7,453건)</b>가 HTI 원장에 집중되어 있습니다. HTI 원장 내 유휴 비율은 53%로, 나머지 원장의 유휴 비율(0~9%)과 큰 차이를 보입니다.<span class="ev ok">확정 수치</span>
+<h5>Key Drivers</h5>
+HTI 원장의 유휴 자산은 여러 부서에 분산되어 있고, 일부 자산의 비고에 "유휴자산 등록(워싱동 보관)"처럼 보관 위치 이동이 기록되어 있습니다.<span class="ev ok">원본 근거 있음</span><br>
+같은 기간 HTI 법인의 내부(법인 간) 매각 기록이 다수 확인되어, 설비 재배치 과정의 일시 보관일 가능성이 있습니다.<span class="ev ca">주의 · 가설</span>
+<h5>Opportunity / Risk Signals</h5>
+유휴 설비의 상태 전환 날짜가 원장에 없어 "언제부터 유휴였는지"를 판단할 수 없습니다. 상태 이력 관리 시 재배치 · 매각 의사결정의 근거가 강화됩니다.<span class="ev mo">관찰 신호</span><br>
+→ 다음 확인: HTI 유휴 설비 중 다른 법인 수요와 매칭 가능한 미싱 · 자동화 설비 목록
+</div>
+<p class="figcap">샘플 데이터 집계 수치를 사용한 예시 문안입니다. 원인 서술은 실제 운영 데이터와 현업 확인을 거쳐 확정해야 합니다.</p>
+
+<h3>근거 등급: AI의 말을 그대로 믿지 않는 장치</h3>
+<table>
+<thead><tr><th style="width:18%">등급</th><th style="width:40%">판정 기준</th><th>리포트 사용 방식</th></tr></thead>
+<tbody>
+<tr><td><span class="tag g">확정</span></td><td>수치 방향과 기여도가 상위 집계와 일치하고 원본 근거가 있음</td><td>요약(Executive Snapshot)의 원인으로 사용</td></tr>
+<tr><td><span class="tag a">주의</span></td><td>움직임은 보이나 기준 불일치 · 데이터 제약이 있음</td><td>상세 섹션에서 "가능성"으로만 서술</td></tr>
+<tr><td><span class="tag b">관찰</span></td><td>변화는 있으나 원인으로 보기엔 근거 부족</td><td>위험 · 기회 신호와 후속 확인 과제로 제시</td></tr>
+</tbody></table>
+</section>
+
+<section id="roadmap">
+<div class="num">07 · 실행 로드맵</div>
+<h2>현재 PoV에서 운영 플랫폼까지: 단계별 진행</h2>
+<table>
+<thead><tr><th style="width:17%">단계</th><th style="width:34%">핵심 작업</th><th style="width:27%">산출물</th><th>경영진 결정 사항</th></tr></thead>
+<tbody>
+<tr><td>현재 PoV<br><span class="tag">진행 중</span></td><td>GPT로 엑셀 · PDF 파싱, AI 목업 화면</td><td>샘플 적재, 시연 화면</td><td>AX 우선 질문 Top 10 선정</td></tr>
+<tr><td>1단계 · 기반<br><span class="tag g">0~3개월</span></td><td>원본 보관층 구축, 조직 · 설비 · 매각 온톨로지 v1, 지표 정의서, KPI 사전 집계, 파서 결과 검증 규칙</td><td>신뢰 가능한 자산 · 매각 현황, 질문 정답셋</td><td>데이터 오너(지표 책임자) 지정, 보유 · 조직 기준 확정</td></tr>
+<tr><td>2단계 · 에이전트<br><span class="tag b">3~6개월</span></td><td>분석 도구 5종, 탐지 워커, 근거 등급, 주간 경영 브리핑, 평가 기준표와 실행 기록</td><td>자동 브리핑, 대화형 원인 분석</td><td>브리핑 수신자 · 주기, 원가 정보 열람 권한</td></tr>
+<tr><td>3단계 · 확장<br><span class="tag a">6~12개월</span></td><td>견적 · 오더 · 설계(BOM) · 재고 · 에너지 연결, 문서 벡터 검색, 법인별 권한, 해외 리전 운영</td><td>수익성 · 생산성 · 원가 분석, 문서 근거 답변</td><td>확장 우선 도메인, 해외 데이터 위치 정책</td></tr>
+</tbody></table>
+<h3>지금 PoV에서 이렇게 바꾸면 됩니다</h3>
+<div class="grid2">
+<div class="card red"><h4>현재 방식</h4><ul>
+<li>AI가 파싱한 결과를 그대로 화면에 사용</li>
+<li>질문마다 AI가 데이터를 읽고 계산</li>
+<li>화면별로 집계 기준이 다름</li>
+<li>답변의 근거와 실행 과정이 남지 않음</li></ul></div>
+<div class="card green"><h4>권장 방식</h4><ul>
+<li>AI 파싱은 유지하되, 원본 위치 기록 + 검증 규칙 통과분만 반영</li>
+<li>계산은 데이터베이스, AI는 해석과 문장 작성</li>
+<li>지표 정의를 한 곳에서 관리하고 모든 화면이 공유</li>
+<li>질문 · 조회 · 근거 · 답변을 저장해 재현과 감사 가능</li></ul></div>
+</div>
+<div class="callout">성공의 기준은 "화면이 그럴듯한가"가 아니라 <b>"같은 질문에 언제나 같은 숫자와 같은 근거가 나오는가"</b>입니다. 1단계에서 질문 정답셋을 만들고 매 변경마다 자동으로 검증하는 것을 권합니다.</div>
+</section>
+
+<section id="appendix" class="appendix">
+<div class="num">Appendix A</div>
+<h2>C-Level 관점: 왜 MongoDB인가</h2>
+<p class="lead2">기술 선택의 기준은 "AX 과제를 얼마나 빠르고 안전하게, 적은 시스템으로 운영할 수 있는가"입니다.</p>
+<div class="grid2">
+<div class="card"><h4>1. 제각각인 데이터를 있는 그대로 담는다</h4><p>엑셀 행, PDF 기안서, 계층 구조의 BOM, 공장마다 다른 원장 양식을 억지로 표로 바꾸지 않고 문서 형태로 저장합니다. 새 양식이 생겨도 재설계 부담이 작습니다.</p></div>
+<div class="card"><h4>2. 시스템 수를 줄인다</h4><p>업무 데이터 저장, 집계, 전문 검색, AI용 벡터 검색을 하나의 플랫폼에서 처리합니다. 별도 검색엔진 · 벡터DB를 붙이고 동기화하는 비용과 장애 지점이 줄어듭니다.</p></div>
+<div class="card"><h4>3. 유연하지만 품질은 지킨다</h4><p>필드 추가는 쉽게 하되, 스키마 검증 규칙으로 필수 항목 · 값의 형식을 강제해 "아무 데이터나 들어가는" 문제를 막습니다.</p></div>
+<div class="card"><h4>4. 글로벌 공장에 맞는 운영</h4><p>MongoDB Atlas는 AWS · Azure · Google Cloud의 여러 리전에서 운영할 수 있어, 데이터 위치 규정과 해외 공장의 접근 속도를 함께 고려할 수 있습니다. 기본 구성부터 복제본을 두어 장애에 대비합니다.</p></div>
+<div class="card"><h4>5. 민감 정보 보호</h4><p>저장 · 전송 암호화, 접근 권한, 감사 로그를 제공하며, 구매가 · 원가처럼 민감한 필드는 암호화된 상태로 조회하는 기능(Queryable Encryption)도 선택할 수 있습니다.</p></div>
+<div class="card"><h4>6. 운영 부담이 적다</h4><p>완전관리형 서비스로 백업, 보안 패치, 용량 확장을 플랫폼이 처리합니다. 세아 내부 인력은 인프라 운영보다 데이터 정의와 AX 과제에 집중할 수 있습니다.</p></div>
+</div>
+<h3>기대 효과 요약</h3>
+<table>
+<thead><tr><th style="width:24%">관점</th><th>MongoDB 기반 구조에서 달라지는 점</th></tr></thead>
+<tbody>
+<tr><td>의사결정 속도</td><td>자주 묻는 지표는 사전 집계로 즉시 확인하고, 원인 분석도 같은 플랫폼 안에서 이어서 수행</td></tr>
+<tr><td>신뢰성</td><td>모든 수치를 원본 행까지 추적하고, AI 답변의 근거와 실행 과정을 보관</td></tr>
+<tr><td>비용 · 복잡도</td><td>저장 · 검색 · 벡터 검색을 하나로 통합해 운영할 시스템과 동기화 작업 감소</td></tr>
+<tr><td>확장성</td><td>자산원장에서 시작해 견적 · 설계 · 재고 · 에너지 · 문서로 같은 구조를 단계적으로 확장</td></tr>
+</tbody></table>
+<p class="figcap">위 효과는 구조적 특성에 기반한 설명이며, 정량 효과는 PoV 단계의 실제 측정으로 확인해야 합니다.</p>
+
+<div class="num" style="margin-top:36px">Appendix B</div>
+<h3 style="margin-top:4px">용어 풀이</h3>
+<table>
+<tbody>
+<tr><td style="width:22%">AX</td><td>AI Transformation. AI를 업무 · 의사결정 방식에 내재화하는 전환</td></tr>
+<tr><td>LLM</td><td>GPT처럼 문장을 이해하고 생성하는 대규모 언어 모델</td></tr>
+<tr><td>AI 에이전트</td><td>LLM이 정해진 도구를 골라 쓰며 여러 단계로 문제를 조사하는 방식</td></tr>
+<tr><td>온톨로지</td><td>업무 대상(법인 · 설비 · 오더 등)과 그 관계를 정의한 회사의 데이터 지도</td></tr>
+<tr><td>KPI 사전 집계</td><td>자주 쓰는 지표를 미리 계산해 저장해 두는 것. 빠른 응답의 핵심</td></tr>
+<tr><td>Vector Search</td><td>의미가 비슷한 문서를 찾는 검색. 기안 · 보고서에서 근거 문서를 찾을 때 사용</td></tr>
+<tr><td>가드레일</td><td>AI가 넘지 못하게 정한 한계(조회 횟수, 시간, 접근 범위 등)</td></tr>
+<tr><td>Trace (실행 기록)</td><td>AI가 어떤 데이터를 조회하고 어떤 순서로 판단했는지의 기록</td></tr>
+</tbody></table>
+
+<div class="num" style="margin-top:36px">Appendix C · 실무팀 참고</div>
+<details><summary>온톨로지 엔티티 문서 예시 (설비)</summary>
+<pre>{
+  "_id": "asset:ledger:000000000000",
+  "type": "asset",
+  "org": { "group": "SeAH", "country": "VN", "entityId": "org:VN:EXAMPLE", "siteId": "site:VN:EXAMPLE:1", "dept": "SEWING-1" },
+  "classification": { "major": "sewing", "minor": "본봉", "dictionaryVersion": "v1" },
+  "status": { "code": "idle", "since": null, "history": [] },
+  "links": { "approvalId": "approval:EXAMPLE", "purchaseId": null, "saleId": null },
+  "source": { "file": "자산원장/EXAMPLE.xlsx", "row": 1234, "dataVersion": "2026-10-19" }
+}</pre></details>
+<details><summary>KPI 사전 집계 예시 (법인 · 분류 · 상태별 수량을 결과 컬렉션에 저장)</summary>
+<pre>db.assets.aggregate([
+  { $match: { "source.dataVersion": "2026-10-19" } },
+  { $group: { _id: { entity: "$org.entityId", major: "$classification.major", status: "$status.code" },
+              qty: { $sum: "$quantity" } } },
+  { $merge: { into: "kpi_asset_status", whenMatched: "replace" } }
+])</pre></details>
+<details><summary>에이전트 가드레일 예시</summary>
+<pre>max_depth: 3          # 온톨로지 경로 탐색 깊이
+max_queries: 15       # 질문 1건당 도구 호출 상한
+timeout_sec: 90       # 전체 분석 시간 제한
+tool_limits: 조회 기간 · 반환 건수 · DB 실행 시간 제한, 사용자 권한 필터 강제 적용
+duplicate_call: 같은 도구 + 같은 입력 반복 호출 차단</pre></details>
+
+<div class="src"><b>참고 · 출처</b><br>
+LY Corporation Tech Blog, 「LLM에게 어디까지 맡길 것인가: AI 에이전트 기반 광고 분석 리포트 자동화」 — <a href="https://techblog.lycorp.co.jp/ko/ai-agent-ad-report-automation" target="_blank" rel="noopener">techblog.lycorp.co.jp</a><br>
+세아 적용 가안(data_architecture.md), 세아 PoV 샘플 데이터(자산원장 8개 · 매각통합) 집계 결과<br>
+MongoDB 문서 — <a href="https://www.mongodb.com/docs/manual/aggregation/" target="_blank" rel="noopener">Aggregation</a> · <a href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/" target="_blank" rel="noopener">Atlas Vector Search</a> · <a href="https://www.mongodb.com/docs/spark-connector/current/" target="_blank" rel="noopener">Spark Connector</a> · <a href="https://www.mongodb.com/docs/manual/core/queryable-encryption/" target="_blank" rel="noopener">Queryable Encryption</a>
+</div>
+</section>
+</main>
+<footer>세아그룹 AX 데이터 플랫폼 가이드 (가안) · MongoDB Korea · 2026-10-19 · 내부 협의용 자료</footer>
+</body>
+</html>
