@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="세아그룹 AX 데이터 플랫폼 가이드: 글로벌 공장·내부 업무 데이터를 의사결정에 쓰는 구조, AI 리포트 자동화 설계 원칙, MongoDB Atlas 아키텍처">
-<title>세아그룹 × MongoDB | AX 데이터 플랫폼 가이드</title>
+<meta name="description" content="세아상역 AX 데이터 플랫폼 가이드: 글로벌 공장·내부 업무 데이터를 의사결정에 쓰는 구조, AI 리포트 자동화 설계 원칙, MongoDB Atlas 아키텍처">
+<title>세아상역(SAE-A) × MongoDB | AX 데이터 플랫폼 가이드</title>
 <style>
 :root{--ink:#102b38;--muted:#5a6e77;--green:#00684a;--green2:#00a35c;--lime:#b1ff05;--mint:#e5f5eb;--blue:#2f5fcf;--blue2:#eef3fd;--amber:#a86a12;--amber2:#fff4df;--red:#b3361f;--red2:#fdecea;--line:#dbe5e6;--bg:#f2f6f6;--card:#fff}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
@@ -56,14 +56,14 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:30px 20px 50p
 </head>
 <body>
 <header class="top"><div class="in">
-<div class="brand">SeAH × <span>MongoDB</span> · AX Data Platform</div>
+<div class="brand">SAE-A × <span>MongoDB</span> · AX Data Platform</div>
 <nav aria-label="목차">
 <a href="#summary">요약</a><a href="#now">현재 진단</a><a href="#lessons">설계 원칙</a><a href="#arch">전체 구조</a><a href="#speed">대용량·속도</a><a href="#ontology">온톨로지</a><a href="#scenario">질문 시나리오</a><a href="#roadmap">로드맵</a><a href="#appendix">Appendix</a>
 </nav></div></header>
 
 <div class="hero"><div class="in">
-<div class="kicker">SeAH AX Journey · Data Platform Blueprint</div>
-<h1>"질문하면 근거와 함께 답하는 회사"를 위한<br>세아그룹 AX 데이터 플랫폼 가이드</h1>
+<div class="kicker">SAE-A AX Journey · Data Platform Blueprint</div>
+<h1>"질문하면 근거와 함께 답하는 회사"를 위한<br>세아상역(SAE-A) AX 데이터 플랫폼 가이드</h1>
 <p class="lead">글로벌 공장의 설비·재고·생산 데이터와 견적·기안·설계 같은 내부 문서를 하나의 데이터 허브로 연결하고, AI가 <b>정확한 수치</b>와 <b>운영 맥락</b>을 함께 제시하도록 만드는 전체 구조와 단계별 실행 가이드입니다.</p>
 <div class="meta"><span>지속 업데이트 문서</span><span>상태: 협의용 가안</span></div>
 </div></div>
@@ -78,7 +78,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:30px 20px 50p
 <div class="card blue"><h4>② 회사의 "지도"를 먼저 만든다</h4><p>법인 → 공장 → 라인 → 설비, 견적 → 오더 → 생산, 기안 → 구매 → 자산처럼 업무 대상 간 관계를 정의한 <b>온톨로지</b>가 있어야 AI가 엉뚱한 데이터를 연결하지 않고 원인을 찾아 내려갑니다.</p></div>
 <div class="card amber"><h4>③ 빠른 답은 "미리 준비된 데이터"에서</h4><p>경영진이 자주 묻는 지표는 기간·법인·품목별로 <b>사전 집계</b>해 두고, 드문 대규모 분석만 별도로 비동기 처리합니다. 응답 속도와 비용이 동시에 안정됩니다.</p></div>
 </div>
-<div class="callout">세아가 지금 진행 중인 <b>GPT 기반 엑셀·PDF 파싱 → 적재 → AI 프론트 목업</b>은 좋은 출발점입니다. 이 가이드는 그 결과물을 버리지 않고, 운영 가능한 의사결정 플랫폼으로 키우기 위한 <b>구조와 순서</b>를 제안합니다.</div>
+<div class="callout">세아상역이 지금 진행 중인 <b>GPT 기반 엑셀·PDF 파싱 → 적재 → AI 프론트 목업</b>은 좋은 출발점입니다. 이 가이드는 그 결과물을 버리지 않고, 운영 가능한 의사결정 플랫폼으로 키우기 위한 <b>구조와 순서</b>를 제안합니다.</div>
 <div class="mission"><div class="m-no">Mission<b>01</b></div><div><h4>전체 데이터 확보: 모든 AX의 출발점</h4><p>아래 숫자는 PoV 샘플 기준 <b>참고치</b>이며 확정된 경영 수치가 아닙니다. 법인 · 공장 전체 데이터가 같은 기준으로 확보되어야 KPI · 온톨로지 · AI 답변이 의사결정에 쓰일 수 있습니다.</p><ul><li>전 법인 · 공장의 자산원장과 견적 · 기안 · 설계 · 재고 원천의 전수 확보</li><li>데이터 오너, 수집 주기, 조직 · 분류 기준(공통 언어) 확정</li><li>원본 보관과 적재 검증을 거친 데이터만 분석에 사용</li></ul></div></div>
 <span class="ref">참고용 · PoV 샘플 기준 (확정치 아님)</span>
 <div class="grid4" style="margin-top:12px">
@@ -87,13 +87,13 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:30px 20px 50p
 <div class="card"><div class="big">51<small>%</small></div><div class="stat-l">기존 분류 사전으로 분류되지 않는 자산 비율</div></div>
 <div class="card"><div class="big">332<small>건</small></div><div class="stat-l">중복된 자산코드 키 → 식별 기준 정비 필요</div></div>
 </div>
-<p class="figcap">참고 수치: 세아 PoV 샘플 데이터(자산원장 8개 파일, 매각통합 1개 파일)의 집계이며, 전체 데이터 확보 후 다시 산출합니다. 금액·단가·개인정보는 이 페이지에 포함하지 않았습니다.</p>
+<p class="figcap">참고 수치: 세아상역 PoV 샘플 데이터(자산원장 8개 파일, 매각통합 1개 파일)의 집계이며, 전체 데이터 확보 후 다시 산출합니다. 금액·단가·개인정보는 이 페이지에 포함하지 않았습니다.</p>
 </section>
 
 <section id="now">
 <div class="num">01 · 현재 진단</div>
 <h2>지금의 PoV는 "보이는 결과"를 빠르게 만들었습니다. 다음은 "믿을 수 있는 답"입니다</h2>
-<p class="lead2">현재 세아의 방식은 샘플 엑셀·PDF를 GPT API로 파싱해 적재하고, AI로 만든 프론트 화면에서 조회하는 구조입니다. 빠르게 가치를 보여주기에는 적합하지만, 전사 확대 시 아래 문제가 반복해서 나타납니다.</p>
+<p class="lead2">현재 세아상역의 방식은 샘플 엑셀·PDF를 GPT API로 파싱해 적재하고, AI로 만든 프론트 화면에서 조회하는 구조입니다. 빠르게 가치를 보여주기에는 적합하지만, 전사 확대 시 아래 문제가 반복해서 나타납니다.</p>
 <div class="grid2">
 <div class="card green"><h4>잘하고 있는 점</h4><ul>
 <li>실제 현업 데이터(자산원장, 매각 이력)로 시작 → 체감 가치가 분명함</li>
@@ -107,7 +107,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:30px 20px 50p
 </div>
 <h3>AI가 엑셀을 바로 읽고 답하게 하면 생기는 일</h3>
 <table>
-<thead><tr><th style="width:26%">증상</th><th>예시 (세아 맥락)</th><th style="width:30%">해결 방향</th></tr></thead>
+<thead><tr><th style="width:26%">증상</th><th>예시 (세아상역 맥락)</th><th style="width:30%">해결 방향</th></tr></thead>
 <tbody>
 <tr><td>숫자가 실행할 때마다 다름</td><td>"인도네시아 2024년 매각 건수"를 물을 때마다 합계·반올림이 달라짐</td><td>집계는 DB가 계산하고 AI는 인용만</td></tr>
 <tr><td>중요 항목 누락</td><td>유휴 설비가 가장 많은 공장을 빼고 요약</td><td>규모·변화량 기준 후보를 코드가 먼저 선정</td></tr>
@@ -135,14 +135,14 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:30px 20px 50p
 </div>
 <h3 style="margin-top:6px">사일로 위에서 작동하는 네 가지 원칙</h3>
 <div class="grid2">
-<div class="card"><h4><span class="tag g">원칙 1</span>계산과 해석을 분리</h4><p>전일·전월·전년 대비 변화와 상위 변동 항목은 코드가 먼저 계산·선정합니다. LLM은 확정된 수치를 비즈니스 문장으로 만듭니다.</p><p style="margin-top:8px"><b>세아 적용:</b> 법인별 보유·유휴 대수, 매각 건수 추이, 자동화 도입률은 MongoDB가 계산합니다.</p></div>
-<div class="card"><h4><span class="tag b">원칙 2</span>자율성은 "탐색 그래프" 안에서</h4><p>에이전트가 다음 조사 대상을 스스로 고르되, 이동 가능한 분석 경로(전체 → 상위 분류 → 세부 항목)는 시스템이 제한합니다.</p><p style="margin-top:8px"><b>세아 적용:</b> 그룹 → 국가 → 법인 → 공장 → 라인 → 설비 경로를 온톨로지로 정의합니다.</p></div>
-<div class="card"><h4><span class="tag a">원칙 3</span>섹션별로 필요한 맥락만</h4><p>요약에는 검증된 원인만, 추세에는 통계만, 기회·위험에는 관찰 신호까지 전달해 과잉 해석을 줄입니다.</p><p style="margin-top:8px"><b>세아 적용:</b> 경영 브리핑, 공장별 상세, 리스크 섹션의 입력을 분리합니다.</p></div>
-<div class="card"><h4><span class="tag r">원칙 4</span>품질을 측정해야 개선된다</h4><p>모든 실행 과정을 기록(trace)하고, 사람이 정한 평가 기준표(rubric)로 변경 전후를 비교합니다.</p><p style="margin-top:8px"><b>세아 적용:</b> 질문·조회·답변·근거를 모두 저장해 재현과 감사가 가능하게 합니다.</p></div>
+<div class="card"><h4><span class="tag g">원칙 1</span>계산과 해석을 분리</h4><p>전일·전월·전년 대비 변화와 상위 변동 항목은 코드가 먼저 계산·선정합니다. LLM은 확정된 수치를 비즈니스 문장으로 만듭니다.</p><p style="margin-top:8px"><b>세아상역 적용:</b> 법인별 보유·유휴 대수, 매각 건수 추이, 자동화 도입률은 MongoDB가 계산합니다.</p></div>
+<div class="card"><h4><span class="tag b">원칙 2</span>자율성은 "탐색 그래프" 안에서</h4><p>에이전트가 다음 조사 대상을 스스로 고르되, 이동 가능한 분석 경로(전체 → 상위 분류 → 세부 항목)는 시스템이 제한합니다.</p><p style="margin-top:8px"><b>세아상역 적용:</b> 그룹 → 국가 → 법인 → 공장 → 라인 → 설비 경로를 온톨로지로 정의합니다.</p></div>
+<div class="card"><h4><span class="tag a">원칙 3</span>섹션별로 필요한 맥락만</h4><p>요약에는 검증된 원인만, 추세에는 통계만, 기회·위험에는 관찰 신호까지 전달해 과잉 해석을 줄입니다.</p><p style="margin-top:8px"><b>세아상역 적용:</b> 경영 브리핑, 공장별 상세, 리스크 섹션의 입력을 분리합니다.</p></div>
+<div class="card"><h4><span class="tag r">원칙 4</span>품질을 측정해야 개선된다</h4><p>모든 실행 과정을 기록(trace)하고, 사람이 정한 평가 기준표(rubric)로 변경 전후를 비교합니다.</p><p style="margin-top:8px"><b>세아상역 적용:</b> 질문·조회·답변·근거를 모두 저장해 재현과 감사가 가능하게 합니다.</p></div>
 </div>
-<h3>다섯 가지 분석 도구 → 세아 적용</h3>
+<h3>다섯 가지 분석 도구 → 세아상역 적용</h3>
 <table>
-<thead><tr><th style="width:20%">분석 도구</th><th style="width:30%">역할</th><th>세아에서의 의미 (예시 질문)</th></tr></thead>
+<thead><tr><th style="width:20%">분석 도구</th><th style="width:30%">역할</th><th>세아상역에서의 의미 (예시 질문)</th></tr></thead>
 <tbody>
 <tr><td>drill_down</td><td>변화를 하위 단위로 분해, 주요 기여자 반환</td><td>"유휴 설비 증가분은 어느 법인·공장·설비 분류에서 나왔나?"</td></tr>
 <tr><td>compare_pattern</td><td>과거 추세로 신규·성장·감소·일시적·구조적 변화 분류</td><td>"이번 분기 매각 증가는 일시적인가, 공장 재편에 따른 구조적 변화인가?"</td></tr>
@@ -150,14 +150,14 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:30px 20px 50p
 <tr><td>peer_comparison</td><td>같은 그룹 평균과 비교</td><td>"베트남 공장의 자동화 비율은 같은 규모 다른 법인과 비교해 어떤가?"</td></tr>
 <tr><td>volume_decompose</td><td>변화를 물량 × 단가로 분해</td><td>"원가 상승은 수량 증가 때문인가, 단가 상승 때문인가?" (견적·구매 데이터 연결 후)</td></tr>
 </tbody></table>
-<p class="figcap">참고: AI 리포트 자동화 선행 사례의 설계 원칙, 세아 적용 가안(data_architecture.md).</p>
+<p class="figcap">참고: AI 리포트 자동화 선행 사례의 설계 원칙, 세아상역 적용 가안(data_architecture.md).</p>
 </section>
 
 <section id="arch">
 <div class="num">03 · 전체 구조</div>
-<h2>세아 AX 데이터 플랫폼: 다섯 단계로 흐르는 하나의 구조</h2>
+<h2>세아상역 AX 데이터 플랫폼: 다섯 단계로 흐르는 하나의 구조</h2>
 <p class="lead2">왼쪽의 원천 데이터가 정제를 거쳐 분석 전용 데이터 사일로(MongoDB Atlas)에 모이고, AI는 허브에 준비된 수치와 맥락을 꺼내 쓰며, 결과는 다시 허브에 저장되어 다음 분석에 재사용됩니다.</p>
-<div class="fig" role="img" aria-label="세아 AX 데이터 플랫폼 전체 아키텍처">
+<div class="fig" role="img" aria-label="세아상역 AX 데이터 플랫폼 전체 아키텍처">
 <svg viewBox="0 0 1220 760" xmlns="http://www.w3.org/2000/svg" font-family="Apple SD Gothic Neo, Malgun Gothic, Arial, sans-serif">
 <defs>
 <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#00684a"/></marker>
@@ -233,7 +233,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:30px 20px 50p
 </g>
 </svg>
 </div>
-<p class="figcap">그림 1. 세아 AX 데이터 플랫폼 전체 구조(가안). ③의 다섯 층은 MongoDB Atlas 안에서 컬렉션 그룹으로 구분되며, 한 시스템에서 운영됩니다.</p>
+<p class="figcap">그림 1. 세아상역 AX 데이터 플랫폼 전체 구조(가안). ③의 다섯 층은 MongoDB Atlas 안에서 컬렉션 그룹으로 구분되며, 한 시스템에서 운영됩니다.</p>
 
 <h3>각 층이 경영진에게 주는 가치</h3>
 <table>
@@ -250,7 +250,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:30px 20px 50p
 <section id="speed">
 <div class="num">04 · 대용량 데이터 전략</div>
 <h2>응답을 빠르게: "모든 질문을 매번 계산하지 않는다"</h2>
-<p class="lead2">글로벌 공장의 데이터가 쌓이면 원본을 그때그때 읽어서 답하는 방식은 느리고 비쌉니다. 운영 중인 AI 리포트 시스템들도 상위 KPI를 매번 다시 조회하지 않고 사전 집계 데이터에서 출발해, 부족할 때만 추가 조회합니다. 세아도 질문을 세 가지 속도 등급으로 나눠 처리합니다.</p>
+<p class="lead2">글로벌 공장의 데이터가 쌓이면 원본을 그때그때 읽어서 답하는 방식은 느리고 비쌉니다. 운영 중인 AI 리포트 시스템들도 상위 KPI를 매번 다시 조회하지 않고 사전 집계 데이터에서 출발해, 부족할 때만 추가 조회합니다. 세아상역도 질문을 세 가지 속도 등급으로 나눠 처리합니다.</p>
 <div class="fig" role="img" aria-label="질문 유형별 응답 속도 등급">
 <svg viewBox="0 0 1200 430" xmlns="http://www.w3.org/2000/svg" font-family="Apple SD Gothic Neo, Malgun Gothic, Arial, sans-serif">
 <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#00684a"/></marker></defs>
@@ -294,8 +294,8 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:30px 20px 50p
 <section id="ontology">
 <div class="num">05 · 온톨로지</div>
 <h2>회사의 지도: AI가 따라갈 수 있는 업무 대상과 관계</h2>
-<p class="lead2">온톨로지는 "우리 회사에는 어떤 대상이 있고, 서로 어떻게 연결되는가"를 정의한 지도입니다. 이 지도가 있으면 AI는 정해진 길(관계)을 따라 원인을 찾아 내려가고, 의미가 다른 데이터를 잘못 연결하지 않습니다. AI가 탐색할 수 있는 경로를 세아의 업무 구조에 맞게 정의한 모습입니다.</p>
-<div class="fig" role="img" aria-label="세아 업무 온톨로지 관계도">
+<p class="lead2">온톨로지는 "우리 회사에는 어떤 대상이 있고, 서로 어떻게 연결되는가"를 정의한 지도입니다. 이 지도가 있으면 AI는 정해진 길(관계)을 따라 원인을 찾아 내려가고, 의미가 다른 데이터를 잘못 연결하지 않습니다. AI가 탐색할 수 있는 경로를 세아상역의 업무 구조에 맞게 정의한 모습입니다.</p>
+<div class="fig" role="img" aria-label="세아상역 업무 온톨로지 관계도">
 <svg viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" font-family="Apple SD Gothic Neo, Malgun Gothic, Arial, sans-serif">
 <defs><marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#4f6b74"/></marker></defs>
 <!-- lane labels -->
@@ -347,7 +347,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:30px 20px 50p
 <text x="20" y="540" font-size="12" fill="#5a6e77">녹색 테두리: 현재 PoV 샘플(자산원장 · 매각)로 바로 구축 가능한 범위 · 주황: 견적 · 설계 · 재고 연결 시 확장 · 파랑: 문서 · 구매 · 처분 이력</text>
 </svg>
 </div>
-<p class="figcap">그림 3. 세아 업무 온톨로지(가안). 각 상자는 MongoDB 컬렉션 하나에 대응하고, 화살표는 AI가 이동할 수 있는 분석 경로입니다.</p>
+<p class="figcap">그림 3. 세아상역 업무 온톨로지(가안). 각 상자는 MongoDB 컬렉션 하나에 대응하고, 화살표는 AI가 이동할 수 있는 분석 경로입니다.</p>
 
 <div class="grid2">
 <div class="card"><h4>온톨로지가 답하게 해 주는 질문</h4><ul>
@@ -381,7 +381,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:30px 20px 50p
 <section id="scenario">
 <div class="num">06 · 질문 시나리오</div>
 <h2>경영진 질문 하나가 처리되는 과정</h2>
-<p class="lead2">"이 지표가 왜 변했나?"라는 원인 분석 질문을 세아에 적용하면 다음과 같습니다. 숫자는 PoV 샘플 데이터의 <b>참고용 집계</b>이며, 원인은 데이터로 검증하기 전까지 <b>가설</b>로 표시됩니다.</p>
+<p class="lead2">"이 지표가 왜 변했나?"라는 원인 분석 질문을 세아상역에 적용하면 다음과 같습니다. 숫자는 PoV 샘플 데이터의 <b>참고용 집계</b>이며, 원인은 데이터로 검증하기 전까지 <b>가설</b>로 표시됩니다.</p>
 <div class="callout amber" style="font-size:18px"><b>질문:</b> "그룹 전체 유휴 설비 중 어디에 몰려 있고, 왜 그런가?"</div>
 <div class="fig" role="img" aria-label="질문 처리 단계">
 <svg viewBox="0 0 1200 230" xmlns="http://www.w3.org/2000/svg" font-family="Apple SD Gothic Neo, Malgun Gothic, Arial, sans-serif">
@@ -451,7 +451,7 @@ HTI 원장의 유휴 자산은 여러 부서에 분산되어 있고, 일부 자�
 
 <section id="appendix" class="appendix">
 <div class="num">Appendix A</div>
-<h2>MongoDB로 가속하는 세아의 AX 여정</h2>
+<h2>MongoDB로 가속하는 세아상역의 AX 여정</h2>
 <p class="lead2">AX의 속도는 데이터를 얼마나 빨리 모으고, 믿을 수 있게 연결하고, AI에 안전하게 내어줄 수 있는지에 달려 있습니다. 여정의 단계마다 MongoDB가 줄여 주는 부분은 다음과 같습니다.</p>
 <div class="grid2">
 <div class="card"><h4><span class="tag g">모으기</span>제각각인 데이터를 있는 그대로</h4><p>엑셀 행, PDF 기안서, 계층 구조의 BOM, 공장마다 다른 원장 양식을 억지로 표로 바꾸지 않고 문서 형태로 저장합니다. 새 양식이 생겨도 재설계 부담이 작습니다.</p></div>
@@ -459,7 +459,7 @@ HTI 원장의 유휴 자산은 여러 부서에 분산되어 있고, 일부 자�
 <div class="card"><h4><span class="tag b">다듬기</span>유연하되 품질 기준은 분명하게</h4><p>필드 추가는 쉽게 하되, 스키마 검증 규칙으로 필수 항목 · 값의 형식을 강제해 "아무 데이터나 들어가는" 문제를 막습니다.</p></div>
 <div class="card"><h4><span class="tag b">넓히기</span>글로벌 공장으로 확장</h4><p>MongoDB Atlas는 AWS · Azure · Google Cloud의 여러 리전에서 운영할 수 있어, 데이터 위치 규정과 해외 공장의 접근 속도를 함께 고려할 수 있습니다. 기본 구성부터 복제본을 두어 장애에 대비합니다.</p></div>
 <div class="card"><h4><span class="tag a">지키기</span>민감 정보 보호</h4><p>저장 · 전송 암호화, 접근 권한, 감사 로그를 제공하며, 구매가 · 원가처럼 민감한 필드는 암호화된 상태로 조회하는 기능(Queryable Encryption)도 선택할 수 있습니다.</p></div>
-<div class="card"><h4><span class="tag a">집중하기</span>운영은 플랫폼에, 사람은 AX에</h4><p>완전관리형 서비스로 백업, 보안 패치, 용량 확장을 플랫폼이 처리합니다. 세아 내부 인력은 인프라 운영보다 데이터 정의와 AX 과제에 집중할 수 있습니다.</p></div>
+<div class="card"><h4><span class="tag a">집중하기</span>운영은 플랫폼에, 사람은 AX에</h4><p>완전관리형 서비스로 백업, 보안 패치, 용량 확장을 플랫폼이 처리합니다. 세아상역 내부 인력은 인프라 운영보다 데이터 정의와 AX 과제에 집중할 수 있습니다.</p></div>
 </div>
 <h3>여정에서 기대하는 변화</h3>
 <table>
@@ -491,7 +491,7 @@ HTI 원장의 유휴 자산은 여러 부서에 분산되어 있고, 일부 자�
 <pre>{
   "_id": "asset:ledger:000000000000",
   "type": "asset",
-  "org": { "group": "SeAH", "country": "VN", "entityId": "org:VN:EXAMPLE", "siteId": "site:VN:EXAMPLE:1", "dept": "SEWING-1" },
+  "org": { "group": "SAE-A", "country": "VN", "entityId": "org:VN:EXAMPLE", "siteId": "site:VN:EXAMPLE:1", "dept": "SEWING-1" },
   "classification": { "major": "sewing", "minor": "본봉", "dictionaryVersion": "v1" },
   "status": { "code": "idle", "since": null, "history": [] },
   "links": { "approvalId": "approval:EXAMPLE", "purchaseId": null, "saleId": null },
@@ -512,11 +512,11 @@ tool_limits: 조회 기간 · 반환 건수 · DB 실행 시간 제한, 사용�
 duplicate_call: 같은 도구 + 같은 입력 반복 호출 차단</pre></details>
 
 <div class="src"><b>참고 · 출처</b><br>
-세아 적용 가안(data_architecture.md), 세아 PoV 샘플 데이터(자산원장 8개 · 매각통합) 집계 결과<br>
+세아상역 적용 가안(data_architecture.md), 세아상역 PoV 샘플 데이터(자산원장 8개 · 매각통합) 집계 결과<br>
 MongoDB 문서 — <a href="https://www.mongodb.com/docs/manual/aggregation/" target="_blank" rel="noopener">Aggregation</a> · <a href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/" target="_blank" rel="noopener">Atlas Vector Search</a> · <a href="https://www.mongodb.com/docs/spark-connector/current/" target="_blank" rel="noopener">Spark Connector</a> · <a href="https://www.mongodb.com/docs/manual/core/queryable-encryption/" target="_blank" rel="noopener">Queryable Encryption</a>
 </div>
 </section>
 </main>
-<footer>세아그룹 AX 데이터 플랫폼 가이드 · MongoDB Korea · 지속 업데이트 문서 · 협의용 가안</footer>
+<footer>세아상역 AX 데이터 플랫폼 가이드 · MongoDB Korea · 지속 업데이트 문서 · 협의용 가안</footer>
 </body>
 </html>
